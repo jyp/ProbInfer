@@ -1,0 +1,14 @@
+*.hi
+*.o
+*.log
+*.pdf
+*.tex
+*.aux
+*.toc
+*.xdv
+*.fls
+*.fdb_latexmk
+*.ptb
+*.lhs
+/svg-inkscape
+

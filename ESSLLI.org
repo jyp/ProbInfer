@@ -1,0 +1,2079 @@
+#+LATEX_COMPILER: xelatex 
+#+LATEX_HEADER: %include polycode.fmt
+#+LATEX_HEADER: %format . = "."
+#+LATEX_HEADER: %format <$> = "{\mathbin{<\!\!\!\$\!\!\!>}}"
+
+# Fallback:
+#+LaTeX_HEADER: \DeclareMathOperator*{\SumInt}{\sum}
+# https://tex.stackexchange.com/questions/68351/what-is-the-command-for-a-sum-symbol-superimposed-on-an-integral-sign
+
+#+LaTeX_HEADER: \usepackage{tikz}
+#+LaTeX_HEADER: \usetikzlibrary{calc}
+#+LaTeX_HEADER: \usetikzlibrary{fadings}
+#+LaTeX_HEADER: \usetikzlibrary{arrows,automata}
+#+LaTeX_HEADER: \usetikzlibrary{intersections}
+#+LaTeX_HEADER: \usepackage{listings}
+#+LaTeX_HEADER: \usepackage{comment}
+#+LaTeX_HEADER: \usepackage{unicode-math}
+#+LaTeX_HEADER: \newcommand\measure[1]{\mathsf{measure}(#1)}
+#+LaTeX_HEADER: \newcommand\Li{\ensuremath{{L}}}
+#+LaTeX_HEADER: \newcommand\Spk{\ensuremath{{S}}}
+#+LaTeX_HEADER: \usepackage{fontspec}
+#+LaTeX_HEADER: \setmainfont{Libertinus Serif}
+#+LaTeX_HEADER: \setsansfont{Libertinus Sans}
+#+LaTeX_HEADER: \setmathfont{Libertinus Math}
+#+LaTeX_HEADER: \usepackage{stackengine}
+#+LaTeX_HEADER: \DeclareMathOperator*{\Sumint}{\ensurestackMath{\stackinset{c}{}{c}{}{\displaystyle\sum}{\stackanchor[0pt]{\symbol{"2320}}{\symbol{"2321}}}}}
+# Ugly in display mode: \DeclareMathOperator*{\SumInt}{ \mathchoice {\ooalign{$\displaystyle\sum$\cr\hidewidth$\displaystyle\int$\hidewidth\cr}} {\ooalign{\raisebox{.14\height}{\scalebox{.7}{$\textstyle\sum$}}\cr\hidewidth$\textstyle\int$\hidewidth\cr}} {\ooalign{\raisebox{.2\height}{\scalebox{.6}{$\scriptstyle\sum$}}\cr$\scriptstyle\int$\cr}} {\ooalign{\raisebox{.2\height}{\scalebox{.6}{$\scriptstyle\sum$}}\cr$\scriptstyle\int$\cr}}}
+# +STARTUP: latexpreview # super slow
+#+LaTeX_HEADER: \usepackage{svg}
+
+#+TITLE: A probabilistic semantics for natural language
+#+AUTHOR: Jean-Philippe Bernardy and Aleksandre Maskharashvili
+#+DATE: 32nd European Summer School in Logic, Language and Information, Week 2: 9–13 Aug 2021
+
+
+
+Preamble: finding the learning material
+
+
+- Clone the repository: ~git clone TODO; cd TODO~ (The lecture notes are in ~ESSLLI.org~)
+- Install the dependencies using nix (see also https://nixos.org/guides/install-nix.html)
+
+#+begin_src bash
+  sh <(curl -L https://nixos.org/nix/install) --daemon
+  nix-shell
+#+end_src
+
+- Load an example: ~ghci DiceExample.hs~
+- run: ~doit~
+  
+* Inference under uncertainty: Problem description
+
+  At least since Aristotle, reasoning with and within natural language
+  has been subject of studies. Traditionally, many of these studies
+  were focused on identifying a logical apparatus of human reasoning.
+  More recently, various logic based frameworks where proposed to study
+  various aspects of human reasoning, including formalizing notions of
+  knowledge, beliefs, hypothesis, making new conclusions based on
+  that, updating knowledgebase, etc.
+
+  Together with logical aspects, human linguistic activity as well
+  involves reasoning with and about incomplete, uncertain, vague
+  information. This includes making inferences, drawing conclusions 
+  with uncertain information at hand. 
+  
+** Logic as the means of categorical judgments/inferences
+   - simple Aristotelian reasoning
+   - limitations of Aristotelian reasoning
+   - (see also “all men are mortal” below)
+*** Aristotelian Syllogisms
+
+    #+begin_example
+  ______________________   ____________________
+  |Every dog barks.    |   | No cat barks.    | 
+  |Goofy is a dog.     |   | Tom is a cat.    |  
+  |)===>               |   | )===>            |
+  |Goofy barks.        |   | Tom doesn't bark |
+  |____________________|   |__________________|
+    #+end_example
+
+What comes after the ~)===>~ symbol can be inferred from what is
+before. Propositions before the symbol ~)===>~ are called /premises/,
+and the statement after ~)===>~ is usually called /the conclusion/ 
+(note that there can be many or even no premise, but there is one and only one
+conclusion). We may say that the conclusion follows or is entailed from the premises.
+
+#+begin_example
+  Every dog barks. ----CONTRARY---- No dog barks.
+    |           \                /         | 
+    |            \              /          |
+    |             \            /           |
+    |              \          /            |
+    |               \        /             |
+  S |                \      /CONTRADICTION | S
+  U |                 \    /    (Negation) | U
+  B |                  \  /                | B
+  A |                   \/                 | A
+  L |                   /\                 | L
+  T |                  /  \                | T 
+  E |                 /    \               | E
+  R |                /      \CONTRADICTION | R
+  N |               /        \ (Negation)  | N
+    |              /          \            |
+    |             /            \           |
+    |            /              \          |
+    v           /                \         v
+  Some dog barks. ----CONTRARY---- Some dog doesn't bark.
+#+end_example
+
+   We can do a bit more in the Aristotelian settings:
+
+    #+begin_example
+  ___________________________________________________
+  |Every cat is a mammal.  | No insect barks.       |
+  |Every mammal eats.      | Every fly is an insect.|
+  |)===>                   | )===>                  |
+  |Every cat eats.         | No fly barks           |
+  |________________________|________________________|
+    #+end_example
+
+  
+  In short, Aristotelian syllogisms concern with universally quantified
+  statements, their subalterns, and negations. 
+ 
+*** First-Order Predicate Logic 
+  In mathematical logics, First-Order Logic (FOL, Predicata Calculus) can
+  be seen as a heir of the Aristotelian syllogisms. 
+  Introduced by Gottlob Frege in the 19th Century, FOL makes use of:
+  - logcial connectives (&, ∨, →, ¬)
+  - constants and variables (mary, john, 1, 0, 2, x, y, etc.)
+  - n-ary predicates (WOMAN, MAN, WALK, HUG, MEET, SEND, LOVE, etc.)
+  - n-ary functional symbols (+, -, etc.)
+  - quantifiers ∀x and ∃x where x is a variable
+  
+  A ~term~ is obtained by applying n-ary function to constants,
+  variables, and/or other terms, which are n in total.
+  An ~atomic formula~ is an n_ary predicate whose all places are occupied by
+  terms. 
+  A ~literal (aka molecule)~ is a formula such as P(t1,...,tn) or ¬P(t1,...,tn) 
+  where P is an n-ary predicate symbol and t1,...,tn are terms. 
+  A ~formula~ is either:
+                       - a literal 
+                       - application of logical connectives to formulae
+                       _ application of a quantifier to a formula: ∀xA or ∃xA
+  
+  - Pluto is a pet                     :    PET(pluto)
+  - Goofy hugs Pluto                   :    HUG(goofy, pluto)
+  - Pluto is a dog and a star          :    DOG(pluto) & STAR(pluto)
+  - If Goofy is late, Pluto barks      :    LATE(goofy) → BARK(pluto) 
+  - Pluto is not mortal                :    ¬MORTAL(pluto)
+  - Either Pluto or Goofy barked       :    BARK(pluto) ∨ BARK(goofy)
+  - A man walks                        :    ∃x(MAN(x) & WALK(x))
+  _ Every man walks                    :    ∀x(MAN(x) → WALK(x))
+  - Every woman saw Joe                :    ∀x(WOMAN(x) → SEE(x,joe)) 
+  - Every woman saw a man              :    ∀x(WOMAN(x) → ∃y(MAN(y) & SEE(x,y)))
+                                       :    ∃y(MAN(y) & ∀x(WOMAN(x) → SEE(x,y)))
+
+   Example of FOL usage:
+
+   ____ENGLISH_______________________FOL_TRANSLATION__________
+   | Mary is a woman                  WOMAN(mary)            | 
+   | Mary walks                       WALK(mary)             |
+   | )===>                            )===>                  |
+   | A woman walks                    ∃x(WOMAN(x) & WALK(x)) |
+   -----------------------------------------------------------
+   How to prove ∃x(WOMAN(x) & WALK(x)) from the premises WOMAN(mary) and WALK(mary)?
+   In FOL, it's quite natural to have the following rule: 
+   If A(k) holds, then ∃xA(x) also holds (where k is a term and x is not free in A(k)).
+   By assuming WOMAN(mary) and WALK(mary) hold,
+   then (WOMAN(mary) & WALK(mary)) holds as well. 
+   In this latter formula, we can apply the FOL rule for ∃, we get:
+   ∃x(WOMAN(x) & WALK(x)).  
+                                 Q.E.D.
+   
+   
+   
+#   Exercise: Show the following holds (use any rules you would like to use): 
+#         #+begin_example
+
+#   ____ENGLISH_______________________FOL_TRANSLATION___________
+#   | Every pet sleeps.            ∀x(PET(x) → SLEEP(x))       |
+#   | Every dog is a pet.          ∀x(DOG(x) → PET(x))         |
+#   | Pluto is a lovely dog.       LOVELY(pluto) & DOG(pluto)  |  
+#   | )===>                        )===>                       |
+#   | Pluto sleeps.                SLEEP(pluto)                |
+#   |__________________________________________________________|
+#     #+end_example
+
+# Hint:  
+#   For any formulae φ and ψ, it holds: φ & ψ → φ and φ & ψ → ψ  
+#   Given that  (ψ → φ) & (φ → ζ), it follows that ψ → ζ  
+#   For any term k, ∀xA(x) entails A(k) 
+#   Given that ∀xA(x) and ∀xB(x), we can conclude ∀x(A(x) & B(x))
+
+
+
+
+** Inferences that are non-categorical (non-logical inferences)
+  Not all inferences are logical though. Consider the following
+  inference problems:
+
+  - Teddy just got home.                             ⊨? Teddy is hungry.
+  - Teddy just drank several glasses of milk.        ⊨? Teddy is not hungry.
+  - Teddy loves cars.                                ⊨? Teddy drives a car.
+  - Teddy hugged a cat.                              ⊨? Teddy got a cat. 
+  - Teddy enjoys listening to Led Zeppelin.          ⊨? Teddy loves English bands.
+  - Teddy is 18 months old.                          ⊨? Teddy weights less than 15 kg.
+  - ⊨? Teddy is a bear.
+
+  One can imagine that the above examples, can be justified by using
+  common-sense knowledge.  Speakers, in many cases, may make
+  extensive use of such knowledge in order to navigate within the
+  context, make specific decisions and take respective steps.
+  
+  The kind of inferences show above are rather hard to formalize in
+  any classical deductive systems, because they require internalisation a
+  large amount of common sense knowledge.
+
+  Here, we limit our discussion to problems which require no external
+  knowledge about the world.  This means in practice that we will
+  focus on problems which are /similar/ to the Aristotelian square,
+  and generalisations thereof. We will use generalised quantifiers and
+  inference problems built with them, which we call probabilistic
+  inference problems.
+
+** A type of non-logical inference: Probabilistic inference
+
+  Our focus is on sentences which are /similar/ to universally
+  quantified ones.  Instead of traditional, logical quantifiers (every,
+  no), we have so called vague (or generalised) quantifiers e.g.,
+  most, almost every, many, almost none of, etc.
+
+  - Most dogs bark.            Goofy is a dog.              $⊨$? Goofy barks.
+  - Almost no cat barks.       Tom is a cat.                $⊨$? Tom doesn't bark.           
+  - Cats rarely bite.          Tom is a cat.                $⊨$? Tom doesn't bite.
+  - Dogs usually are friendly. Pluto is a dog.              $⊨$? Pluto is friendly.
+  - Many cats sleep.           Tom is a cat.                $⊨$? Tom sleeps.
+  - Mice are not lovely.       Micky is an atypical mouse.  $⊨$? Micky is not lovely.
+
+  One of the main questions that we may ask is the following: Are the
+  rules governing reasoning under uncertainty part of the same system
+  as the logical rules? Irrespective of their ontological classification,
+  those rules are part of human reasoning and are clearly expressed in
+  natural languages (like English) with the help of morpho-syntactic
+  and/or lexical apparatus.
+
+  We call an inference demonstrative if the premises necessitate the
+  conclusion. In other words, a demonstrative inference is any
+  inference that is truth-preserving.
+  For example, we can say that Aristotelian syllogism are only concerned
+  with demonstrative inferences (given that premises are true, the
+  conclusion is true).
+
+  If an inference is not demonstrative, we call it non-demonstrative.
+  That is, the conclusion is not necessary to hold (be true) given that
+  the premises hold. Hence, non-demonstrative inferences are those which
+  are not truth-preserving. We are interested in non-demonstrative
+  inferences. Of course, many “wrong” (unreasonable, rejectable)
+  inferences are non-demonstrative.
+
+  “If, however, there is any kind of inference whose premises, although
+  not necessitating the conclusion, do lend in weight, support it, or
+  make it probable, then such inferences possess a certain kind of
+  logical rectitude. It is not deductive validity, but it is important
+  anyway.”     /Wesley C. Salmon, The foundations of Scientific Inference/
+  
+  We will be mostly interested in this /important/ inferences  where premises
+  do not necessitate the conclusion but make it /probable/, which we refer to as
+  /probabilistic inference/.
+
+** Linguistic phenomena involved in probabilistic inferences
+
+Lexical and morpho-syntactic apparatus in natural languages (like
+English) allow us to express expressions that we've been arguing are
+probabilistic in nature.
+
+*** Generalized Quantifiers 
+    Logic-based deductive inference usually involves quantifiers,
+    universal (e.g. every, all, no) and existential (e.g. there is a).
+    (Recap: In classical logical frameworks, the universal and
+    existential quantifiers are interdefinable. 
+    A question to think about: Why is that so?
+        
+            Hint: 
+                 - Every vampire is sleeping <===> It is not true
+                      that there is a vampire who isn't sleeping
+                 - A vampire is sleeping <====> It is not true that
+                                          no vampire is sleeping)
+
+    
+    Not all quantifiers in natural languages are universal and/or existential.
+    Consider: most, few, many, several, almost none of, etc. These
+    quantifiers are called generalized quantifiers. They usually give
+    rise to information that is vague, uncertain.
+    
+   - Most doctors are smart.
+   - A few countries has surplus of Covid-19 vaccines.
+   - Many countries don't have enough Covid-19 vaccines.
+   - Almost no vampires are sleeping.
+    
+   While the above sentences give us certainly rich information about
+   the current state of affairs (aka the world), one cannot be
+   certain when discussing particular instantiations of these
+   sentences. E.g.,
+
+   - Dracula is a vampire. Is he sleeping? (Probably yes, but one cannot claim it with full certainty.)
+
+     In this way, we can construct various quantified propositions
+     which would carry probabilistic meaning. One way of thinking
+     about it is to consider a universally quantified proposition and
+     instead of the universal quantifier take some generalized
+     quantifier; the resultant proposition would not any more state a
+     universal property (e.i., one that applies to every element in a
+     domain), but will rather give rise to somewhat vague information.
+     
+*** Adverbs of Frequency : TODO : 
+    
+    Another source of vagueness are adverbs of frequency, e.g, rarely,
+    usually, regularly, frequently, several times a year, probably etc. 
+    They modify a verb phrase and thus quantify over actions/events that
+    take place. They can also cast doubt on categorical information, 
+    make it less  certain. 
+    Consider the following example:
+    
+   - Almost all vampires are friendly.
+   - Every vampire is probably friendly.
+
+    Are these two equivalent? Maybe! And if yes, then 
+   /probably/ and the genarilzed quantifier /almost all/ have similar semantic effects.
+
+   In the following examples, we combine advebrs of frequency and generalized quantifiers:
+   - Birds are usually able to fly.  (Similar to:  Most birds are able to fly.)
+   - Mammals can rarely fly.         (Similar to:  Almost no mammal can fly.)
+   
+   This gives us a basis to treat (at least for purposes of a limited usage) adverbs of
+   frequency in a similar manner as generalized quantifiers. (Adverbs
+   of frequency can be seen as generalized quantifiers over events.)
+
+*** Graded Adjectives and Comparatives
+    Natural language allows us to express various kinds of properties, some of which
+    can be characterized in terms of degrees (scale). For example, cold, colder, too cold, etc.
+    That is, we can derive from graded (gradable) properties a way of measuring and comparing objects
+    that these properties can be applied. 
+
+    John is taller than most people.
+    -------------------------------
+    $⊨$? John is tall.
+
+    Few people are taller than John.
+    ------------------------------
+    $⊨$? John is tall.
+
+    NBA players are taller than most people in US.
+    Few people are NBA players. 
+    Muggsy Bogues is an NBA player.
+    ---------------------------------------------
+    $⊨$? Muggsy Bogues is taller than most people in US.
+
+
+# A total of 4,509 players have played in the NBA.
+# Vince Carter has played with/against 40% of all players in the HISTORY of the NBA.
+# Muggsy Bogues is 5'3"
+
+* Probability theory, Bayesian Reasoning, Probabilistic programming
+** Motivational Problem (1)
+ You throw two 6-faced dice.
+
+ You observe that the sum is greater than 8
+
+ What is the probability that the product is greater than 20?
+
+Solution: file:DiceExample.hs
+
+** Motivational Problem (2)
+
+ Assume a big bag, which you know contains a lot of red and blue
+ balls.  The contents of the bag is thoroughly mixed. You do not know
+ the proportion of blue and red balls in the bag.
+ # Prior
+
+ You pick 4 balls at random, putting each ball back in the bag after
+ looking at it. The first three are red, the last one is blue.
+ # Evidence
+
+ What is the probability for your next ball-pick to yield a red ball?
+ # Posterior
+
+** Elements of Probability theory                                        
+*** Concept: Probability distribution
+**** Frequency distribution
+ Consider a coin, with two faces, nominally labelled “heads” and
+ “tails”.
+
+ Throw it \(n\) times. Consider what you will get.
+
+ - \( f(Heads) + f(Tails) = n\)
+
+ Consider a die, with 6 faces. Throw it \(n\) times. Consider what you
+ will get.
+
+ Let Ω = {1,2,3,4,5,6}
+ We say that Ω is the probability space of x.
+
+ Note:
+ - $\sum_{x:Ω} 1 = 6$
+ - The measure of the space is 6.
+
+# :Sandro: We'd be better to explicitly mention what the notion "x:Ω" means.  
+
+**** Discrete probability distributions
+
+ One can define the probability of an event P(x) (with x:Ω) as the
+ limit of a frequency distribution /f/ divided by the total number of
+ observations of /x/, for the number of observations tending to infinity.
+
+ If the coin is “fair”, we then expect:
+
+ - P(Heads) = 0.5
+ - P(Tails) = 0.5
+
+ For any probability distribution \(P\), over a domain \(Ω\),
+ we expect:
+
+ - $∑_{x:Ω} P(x) = 1$
+
+
+**** Continuous probability distribution
+ Later on, we will mostly turn our attention to set of events Ω which
+ are not discrete. For example, instead of considering whether the coin
+ falls heads or tails, consider /where/ it ends up falling, for example
+ as a pair of coordinates.
+
+ - $Ω = ℝ²$
+
+ If we'd attempt to use a probability distribution as before, we'd end up
+ with P(x) = 0 for every point.
+ So in this case, each element of Ω is assigned not a probability but a
+ /probability density/.
+
+**** Continuous probability distribution: properties
+
+ If \(f\) is the /probability density function/ (PDF) of P, the fundamental
+ property becomes:
+
+ - $∫_{x:Ω} f(x) dx = 1$
+
+ Remark: we'll almost never care about the value of \(f\) directly; only
+ its behaviour under integrals. That is, the only valid question to ask
+ is the probability of the coin falling “within an area” — not
+ “exactly” at a given point.
+
+*** Notation
+
+In the scientific literature, the \(P(...)\) notation is incredibly overloaded. 
+Let us give a number of overloadings, each in terms of the previous one. 
+
+ - If \(C\) is a subset of Ω, then
+    * $P(C) = ∑_{x:C} P(x)$ if Ω is discrete
+    * $P(C) = ∫_{x:C} PDF(x)$ dx if Ω is continuous
+ - If \(c(x)\) is a condition (Boolean expression),
+      - $P(c) = P(\{x ∈ Ω ∣ c(x)\})$.
+   That is, we check the probability of the set of events which makes \(c\) true.
+
+ - If \(e\) is an expression,
+    - $P(e == x)$, where x is a distribution which one has to figure out implicitly.
+
+**** Examples
+ - \(P(Heads ∪ Tails)\)
+ - \(P({d > 3 ∣ d ∈ {1,2,3,4,5,6}})\)
+ - \(P(d) = 1/6\)
+   
+*** Dependent and Independent events and variables
+
+   - Two events A and B are called /independent/ events iff. 
+
+     - $P(A ∧ B) = P(A) · P(B)$.
+
+   - The probability  \(P(A ∩ B)\) is *not* equal to \(P(A) · P(B)\) in general!
+
+*** Examples
+**** Coins
+ - $P(Heads ∧ Tails) = 0$
+    (Indeed, the events are /dependent/ on each other)
+
+**** Dice
+
+ - Throw a pair of 6-faced dice d₁, d₂. P(d₁+d₂ > 9) = ?
+
+    |   || 1 | 2 | 3 |  4 |  5 |  6 |
+    |---++---+---+---+----+----+----|
+    | 1 || 2 | 3 | 4 |  5 |  6 |  7 |
+    | 2 || 3 | 4 | 5 |  6 |  7 |  8 |
+    | 3 || 4 | 5 | 6 |  7 |  8 |  9 |
+    | 4 || 5 | 6 | 7 |  8 |  9 | 10 |
+    | 5 || 6 | 7 | 8 |  9 | 10 | 11 |
+    | 6 || 7 | 8 | 9 | 10 | 11 | 12 |
+
+  - 36 (equally probable, aka equiprobable) cases
+  - 21 out of 36 satisfy the condition
+  - → \(P(d₁+d₂ > 9) = 21/36 = 7/12\)
+
+*** Conditional probability (1)
+
+ Definition:
+
+ - $P(A ∣ B) = P(A ∧ B) / P(B)$
+   -   if $P(B) > 0$
+
+ Example:
+
+
+ \begin{align*}
+      P (Heads ∣ Tails) & = P (Heads ∧ Tails) / P(Head) \\
+                        & = 0 / 0.5 \\
+                        & = 0
+ \end{align*}
+ \begin{align*}
+      P (d₁+d₂ > 6 ∣ d₂=5) & = P(d₁+d₂ > 6 ∧ d₂=5) / P(d₂ = 5) \\
+                           & =  (5 / 36)           / (1/6) \\
+                           & =   5 / 6
+ \end{align*}
+
+*** Conditional probability (2)
+
+ Alternatively one can use \(P(A ∣ B)\) as a primitive notion and define
+
+ -  $P(A ∧ B) = P(A ∣ B) · P(B)$
+
+ This equation is useful when \(P(A ∣ B)\) is known or easy to compute.
+
+**** Example
+
+     \begin{align*}
+     P(d₁+d₂ > 6 ∧ d₂=5)  
+       & = P (d₁+d₂ > 6 ∣ d₂=5) · P(d₂=5)  & \text{by the above}  \\
+       & = P (d₁+5 > 6)  · P(d₂=5)         & \text{by substitution}  \\
+       & = P (d₁ > 1)  · P(d₂=5)           & \text{by subtracting 5}  \\
+       & = (5/6)       · (1/6)  \\
+       & = (5/6)       . (1/6)  \\
+       & = 5/36 
+     \end{align*}
+
+*** Probability Laws
+**** Probability of disjoint events
+
+ A and B are said to be disjoint (as sets or conditions) iff. 
+   -  $A ∩ B = ∅$
+   -  $A ∧ B = false$
+
+ If \(A\) and \(B\) are disjoint, then the probability of the union is the sum
+ of probabilities:
+
+   - If $A ∧ B = false$, then $P(A ∨ B) = P(A) + P(B)$
+   - If $A ∩ B = ∅$,     then $P(A ∪ B) = P(A) + P(B)$
+
+ Remark: Do not confuse “disjoint” and “independent”.
+
+# If A and B are disjoint, i.e. P(A ∩ B)=0, so, if P(A) and P(B) are more than zero, 
+# then P(A ∩ B) is not equal to P(A) · P(B) .
+
+**** Probability of negation/complement
+
+ - $P(¬A) + P(A) = P(¬A ∨ A) = P(true) = 1$
+
+ hence:
+ - $P(¬A) = 1 - P(A)$
+
+ exercise: use sets instead of Boolean expressions.
+
+**** Law of total probability
+ if \(B₁\), \(B₂\) disjoint and \(B₁ ∨ B₂ = true\):
+
+ - \(P(A) = P(A ∧ B₁) + P(A ∧ B₂)\)
+
+ Indeed, 
+
+\begin{align*} 
+ P(A ∧ B₂) + P(A ∧ B₁)
+  & = P((A ∧ B₂) ∨ (A ∧ B₁))  \text{disjoint events} \\
+  & = P(A ∧ (B₂ ∨ B₁)) \\
+  & = P(A ∧ true) \\
+  & = P(A) \\
+\end{align*} 
+
+**** Probability of disjunction
+
+ What if \(A\) and \(B\) are not disjoint? 
+
+ - \(P(A ∨ B) = P (A) + P(B) - P(A ∧ B)\)
+
+ Lemma: if \(A ⊆ B\) then \(P(A) + P(B ∖ A) = P(B)\)
+ Proof:
+
+ \begin{align*}
+  P(A) + P(B ∖ A)  & = P (A ∪ (B ∖ A))   & \text{ disjoint events} \\
+                   & = P (B)
+ \end{align*}
+
+ Proof of theorem:
+ \begin{align*}
+   P(A ∪ B) & = P(A ∪ (B ∖ A)) \\
+            & = P(A) + P(B ∖ A))       & \text{disjoint events} \\
+            & = P(A) + P(B) - P(A∩B) & \text{Lemma}
+ \end{align*}
+
+**** Summary of Laws
+
+    - $P(Ω) = 1$
+    - $P(¬ A) = 1 - P(A)$
+    - $P(A ∨ B) = P (A) + P(B) - P(A∧B)$
+    - $P(A ∧ B) = P(A ∣ B) · P(B)$
+    - if $B₁, B₂$ complementary, $P(A) = P(A ∧ B₁) + P(A ∧ B₂)$
+
+*** Random variables with priors (discrete)
+ How to evaluate \(P(A)\), for an expression \(A\) depending on a random
+ variable \(r\)?
+
+ Using the law of total probability:
+
+ \begin{align*}
+ P(A) & = ∑_{i:Ω} P(r=i ∧ A) \\
+      & = ∑_{i:Ω} P(A ∣ r=i) P(r=i) \\
+ \end{align*}
+
+ We can even write
+ - $P(A)  = ∑_{i:Ω} P(A[i/r]) P(r=i)$
+
+ Writing \(A[i/r]\) to mean that we substitute \(r\) for \(i\) in the expression \(A\).
+ But \(A[i/r]\) no longer depends on a random variable. (It is either true
+ or false). So it is less confusing to write \(Indicator\) instead of \(P\),
+ where \(Indicator(c) = 1\) when \(c\) is true and 0 when \(c\) is false.
+
+ - $P(A)  = ∑_{i:Ω} Indicator(A[i/r]) P(r=i)$
+
+ In such an equation, we can call \(P(r=i)\) the prior probability of \(r=i\).
+
+**** Example (discrete)
+ In the dice example, every time that we want to evaluate the
+ probability of an event (or condition) A which *depends* on the roll
+ of the dice, we can use the formula:
+
+ -  \(P(A) = ∑_{i∈[1..6]} ∑_{j∈[1..6]} P(A ∣ d₁ = i ∧ d₂ = j) P(d₁ = i ∧ d₂ = j)\)
+
+ If the dice are fair and independent, then \(P(d₁ = i ∧ d₂ = j) = 1/36\),
+ for any \(i,j\), and we have:
+
+ -  \(P(A) = ∑_{i∈[1..6]} ∑_{j∈[1..6]} P(A ∣ d₁ = i ∧ d₂ = j) / 36\)
+
+ and even:
+ -  \(P(A) = ∑_{i∈[1..6]} ∑_{j∈[1..6]} Indicator(A[d₁ = i,d₂ = j]) / 36\)
+
+ If the dice were unfair or dependent, we'd change the prior 
+ $P(d₁ = i ∧ d₂ = j)$ accordingly.
+
+ Say if \(A\) is \(d₁+d₂ > 6\):
+
+
+ -  P(d₁+d₂>6) = ∑(i∈[1..6]) ∑(j∈[1..6]) Indicator(i+j > 6) / 36
+
+**** Random variables with priors (continuous)
+ For continuous variables, we have:
+
+ \begin{align*}
+   P(A) & = ∫_{x:Ω} f(r=i ∧ A) fᵣ(x) dx \\
+        & = ∫_{x:Ω} Indicator(A[x/r]) fᵣ(x) dx
+ \end{align*}
+
+ with: fᵣ the PDF of the distribution of the random variable r.
+
+ Example: probability that the coin falls on the table:
+ Let 
+   - $A      ≜ (x ∈ Table)$   
+     (where Table is a subset of $ℝ²$ representing the surface of the table.)
+   - $f(Coin) ≜ 1/a$  
+     (using a simple model where I can throw the coin anywhere in the room and a = room areaRoom area.)
+
+      \begin{align*}
+          P(A) & = ∫_{x:ℝ²} Indicator(x∈Table) \frac 1 a dx \\
+               & = \frac 1 a ∫_{x:ℝ²} Indicator(x∈Table) dx \\
+               & = \frac 1 a \left(∫_{x∈Table} Indicator(x∈Table) dx + ∫_{x∈(ℝ² ∖ Table)} Indicator(x∈Table) dx\right) \\
+               & = \frac 1 a \left(∫_{x∈Table} 1 dx + ∫_{x∈(ℝ² ∖ Table)} 0 dx\right) \\
+               & = \frac 1 a \left(1 ∫_{x∈Table} dx + 0 ∫_{x∈(ℝ² ∖ Table)} dx\right) \\
+               & = \frac 1 a \left(∫_{x∈Table} dx\right) \\
+               & = \frac 1 a t \\
+               & = \frac t a
+      \end{align*}
+
+ Any idea of a better model? What would be the effect on the outcome?
+*** Evidence and posteriors
+ Assume now that we have some *evidence* to account for.
+
+ In the case of the dice, we could somehow know that the sum is
+ greater than 8. Then what is the *posterior* probability that the
+ product is less than 20?
+
+ - $E ≜ d₁+d₂ > 8$
+ - $A ≜ d₁ · d₂ > 20$
+
+ We need to account for \(E\):
+ - \(P(A ∣ E) = P (A ∧ E) / P(E)\)
+
+ -  \begin{multline*}
+       P(d₁·d₂ < 20 ∧ d₁+d₂ > 8) = \\
+          ∑_{i∈[1..6]} ∑_{j∈[1..6]} Indicator(i+j > 8 ∧ i·j > 20) P(d₁ = i ∧ d₂ = j)
+    \end{multline*}
+
+** Probabilistic Programs
+ The above gives an informal recipe to compute probabilities. It works
+ for simple problems, but it's easy to make mistakes when tackling
+ non-trivial problems.  We set out to make the process systematic --
+ and so it can also be the basis of complex models. This systematic
+ approach will help with the interpretation of natural language, which
+ is our real goal.
+
+ We are really interested in defining spaces of possible situations.
+ We will do so with the help of /probabilistic
+ programs/. Probabilistic programs are procedures whose return value
+ may depend on sampling from a distribution.
+
+ Besides, the \(P(...)\) notation is a problem on its own, with so much
+ overloading that it's often hard to grasp. Probabilistic programs
+ largely eliminate issues of the \(P(...)\) notation.
+
+*** Probability distributions (1)
+ The basic building block to describe possible worlds (probabilistic
+ programs) are probability distributions. We will list and discuss
+ some of them.
+
+ - \(DiscreteUniform(Ω)\)
+   \begin{align*}
+       P(x) & = 1 / \measure {Ω}   & \text{if~} x ∈ Ω \\
+            & = 0             & \text{otherwise}
+   \end{align*}
+   Suitable if all choices are equally probable --- for a finite set of events.
+
+ - \(Uniform(a,b)\)
+   - PDF(x) = 1/(b-a)   if x ∈ [a,b]
+            = 0         otherwise
+   - if all choices are equally probable --- if the set of events is continuous and bounded.
+
+ - \(Bernoulli(p)\)
+   - \(P(0) = 1-p\)
+   - \(P(1) = p\)
+   - Two choices, which are not necessarily equally probable.
+   - In our example, we can represent the space of Balls by Bernoulli(ρ)
+
+In probabilistic programs, we can sample from a distribution using a special-purpose primitive |sample|. Example:
+ 
+#+begin_src haskell
+ ball = sample (Bernoulli ρ)
+#+end_src
+
+(The proportion of balls in the bag is \(ρ\) and is unknown)
+
+*** Probability distributions (2)
+ - \(Normal(μ,σ)\)
+   - PDF = ${\displaystyle {\frac {1}{\sqrt {2\pi \sigma ^{2}}}}e^{-{\frac {(x-\mu )^{2}}{2\sigma ^{2}}}}}$
+   - Often used to model a random variable which depends itself on many variables in an unknown way
+   - mean = μ
+
+ - \(Beta(α,β)\) with  \(α,β > 0\)
+   - $\displaystyle { PDF(x) = \frac {x^{\alpha -1}(1-x)^{\beta -1}}{\mathrm {B} (\alpha ,\beta )}}$ if \(x ∈ [0,1]\), \(0\) otherwise
+
+     where ${\displaystyle \mathrm {B} (\alpha ,\beta )={\frac {\Gamma (\alpha )\Gamma (\beta )}{\Gamma (\alpha +\beta )}}}$  and \(Γ\) is the Gamma function. (just a normalisation factor)
+
+   - Useful to model bounded variables, with non-uniform distributions.
+   - \(Beta(1,1) = Uniform[0,1]\)
+   - Mean = $\frac {α} {α+β}$
+   - increasing \(α\) “pushes” the distribution towards 1; \(β\) towards 0.
+
+*** Constants
+
+    A simple (but very important!) probabilistic program is the one
+    which just returns a constant $k$. We write it:
+
+
+    #+begin_src haskell
+return k
+    #+end_src
+
+*** Sequencing instructions
+
+If |t| and |u| are probabilistic probabilistic programs, then the
+following is also a probabilistic program:
+
+#+begin_src haskell
+do x ← t; u
+#+end_src
+
+Here, we additionally allow the rest of the program, |u|, to depend on
+(use) the variable |x|.
+Note that this is the /only construction/ that can declare a variable.
+
+*** Observations
+
+ To represent evidence, we introduce the program |observe(φ)|, where φ
+ is a Boolean-valued expression. If φ is true, then |observe(φ)| has
+ no effect.  If φ is false, then |observe(φ)| then the program is
+ aborted; in essence the samples made above in the program are discarded.
+ We will make formally precise later.
+ 
+ In our running example, a program sampling a blue ball can be written as:
+
+ #+begin_src haskell
+ blueBall = do
+   x ← ball
+   observe (x == Blue)
+   return x
+ #+end_src
+
+A program sampling two balls, and at least one blue, is:
+
+ #+begin_src haskell
+ twoBallsAtLeastOneBlue = do
+   x ← ball
+   y ← ball
+   observe (x == Blue || y == Blue)
+   return (x,y)
+ #+end_src
+
+*** Expected truth value (aka “Probability”)
+
+ We can now conveniently phrase our problems in this framework:
+
+ If we let |die = sample (DiscreteUniform [1..6])|
+
+ The program representing situations where the sum of dice is \(> 6\) is :
+
+#+begin: example-src :filename "DiceExample.hs" :defn twoDieAbove6
+twoDieAbove6 = do
+  d₁ <- die
+  d₂ <- die
+  observe (d₁ + d₂ > 8)
+  return (d₁,d₂)
+#+end:
+
+What want to do now is to sample a pair of dice using the above
+procedure, then evaluate the probability that the product is greater
+than 20.
+
+ Given a random pair \((x,y)\) sampled by |twoDieAbove6|, we'd be interested in the
+ truth value of the proposition
+
+   -  \(φ = x × y > 20\)
+
+ But φ depends on which pair \((x,y)\) we choose. So the /probability/ of φ is
+ given by the expected value of the indicator function \(Indicator(φ)\).
+
+ So we could define the probability of φ as:
+
+\(𝔼_{[(x,y)∈twoDieAbove9]}(Indicator(x×y > 20))\)
+
+
+There is however a convenient way to represent the above expression in
+terms of a probabilistic program directly:
+
+#+begin: example-src :filename "DiceExample.hs" :defn problem1
+problem1 = do
+  (x,y) <- twoDieAbove6
+  return (indicator <$> (x*y > 20))
+#+end:
+
+This way, to evaluate probabilies, the only thing that we need is to
+take the expected value of probabilistic programs. (We will see
+later how to do this.)
+
+**** Remark (skip)
+
+#+begin_src haskell
+do x ← a
+   observe (b x)
+   return (c x)
+#+end_src
+
+is not the same as
+
+#+begin_src haskell
+do x ← a
+   return (b x ⟶ c x)
+#+end_src
+
+ In the first instance, if \(b(x)\) is false so \(x\) is not
+ counted. In the 2nd program if \(b(x)\) is false it is counted as
+ satisfying the condition.
+
+*** Example: drug test (Wikipedia)
+ #+begin_quote
+ Suppose that a test for using a particular drug is 99% sensitive and
+ 99% specific. That is, the test will produce 99% true positive results
+ for drug users and 99% true negative results for non-drug
+ users. Suppose that 0.5% of people are users of the drug. What is the
+ probability that a randomly selected individual with a positive test
+ is a drug user?
+ #+end_quote
+
+This can be modelled by the following probabilistic program:
+
+#+begin: example-src :filename "DrugTest.hs" :defn exampleDrug
+exampleDrug = do
+  -- prior
+  isUser <- sample (Bernoulli (0.5 * percent))
+  -- evidence
+  testedPositive <- if_ isUser $ \case
+    True -> sample (Bernoulli (99 * percent))
+    False -> sample (Bernoulli (1 * percent))
+  observe testedPositive
+  -- posterior
+  return isUser
+#+end
+
+(Complete program file here: file:DrugTest.hs)
+
+*** Answer To Introductory Problem
+
+ [[*Motivational Problem (2)][link back to the introductory problem]]
+
+One might think that a simple answer is \(\frac 3 4\). But is this
+correct?  Let's try to use the concepts developped so far and write a
+probabilistic program modelling the problem:
+
+file:Balls.hs
+
+What do you think is the expected result of this program? This is the
+topic of the rest of the lecture.
+
+*** Meaning of probabilistic programs
+     
+We define the /integrator/ of \(f(z)\) over a probabilistic program
+\(t\), ($\Sumint_{z∈t} f(z)$) as a generalisation of the
+integration/summation of \(f(x)\) for the possible return values \(z\)
+returned by \(t\).
+
+We define:
+ 
+ \begin{align*}
+\Sumint_{z ∈ return x} f(z) & = f(x) \\
+\Sumint_{z ∈ (do x ← t; u(x))} f(z) & = \Sumint_{x ∈ t} \Sumint_{z ∈ u(x)} f(z) \\
+\Sumint_{z ∈ sample(c)} f(z) & = ∫_{x∈ℝ} \mathrm{PDF}_c(x) · f(x) dx & \text{sampling in a continuous distribution}\\
+\Sumint_{z ∈ sample(d)} f(z) & = \sum P_d(x) · f(x) & \text{sampling in a discrete distribution}\\
+\Sumint_{z ∈ observe(φ)} f(z) & = Indicator (φ) · f(◇)
+ \end{align*}
+
+
+(Note that the “observe” program does not return any result, so the
+ integrand \(f(z)\) cannot in fact depend on \(z\), the result of the
+ program.)
+
+Don't worry if you don't get all details at this stage. The main point
+is that we can define the meaning of probabilistic programs in a
+precise, mathematical manner. (Without referring to how probabilistic
+programs are run on an actual machine.)
+
+ 
+**** Measure
+
+Probabilistic programs do *not* define distributions. That
+is, the total /measure/ of a program is not guaranteed to be 1. For example,
+the program |observe false| has a measure of 0.
+     
+We define the measure of a program t as follows:
+
+ $\measure t = \sum_{z∈t} 1$
+
+Thus the measure “counts'' every element with the same unit weight.
+
+**** Lemma: integrators are linear operators
+
+ [In the vector space of real-valued functions]    
+
+ Lemma:
+ - $\Sumint_{x∈t} (k × f(x)) = k × \Sumint_{x∈t} f(x)$
+ - $\Sumint_{x∈t} (f(x) + g(x)) = \Sumint_{x∈t} f(x) + \Sumint_{x∈t} g(y)$
+
+ Proof:
+ By induction on \(t\), relying on the linearity of $∑$ and $∫$.
+
+**** Lemma: Properties of measures
+
+ \begin{align*}
+   \measure {sample d} & = 1 \\
+   \measure {observe φ} & = Indicator ⟦φ⟧ \\
+   \measure {do x←t;u} & = \Sumint_{x∈t} \measure u
+ \end{align*}
+
+ - Proposition: For probabilistic program \(t\), $\measure t ≤ 1$.
+
+**** Expected value
+
+     
+The expected value of $f(z)$ over a value $z$ sampled by a
+probabilistic program $t$ is defined as follows:
+
+$\frac {\Sumint_{z∈t} f(z)} {\measure t}$
+
+It is also very useful to define the expected value of
+a probabilistic program itself, as simply the expected value of its
+returned values:
+
+ $𝔼(t) = 𝔼_{z∈t}[z]$
+
+(This make sense only when \(t\) returns a numerical value.)
+
+**** Expected truth value (aka “probability”)
+
+If a program \(t\) returns the type |Bool| (either the constant |True|
+or |False|), we can define the probability of \(t\) (to return |True|)
+as:
+
+\(ℙ(t) = 𝔼[z←t;return (Indicator(z))]\)
+
+(So we simply convert the Boolean value to 0 or 1, and then take the
+expected value.)
+
+**** Example: Drug test
+ Given |exampleDrug| defined as above (file:DrugTest.hs::exampleDrug)
+
+ - Compute: $ℙ(exampleDrug)$
+
+ - Answer: $\frac {\Sumint_{z∈t} indicator(z)} {\measure {exampleDrug}}$
+
+**** Exercise: compute the above answer using the definitions.
+
+Solution = \(\frac {ok} {total}\)
+
+\begin{align*}
+ ok 
+ & = \measure t \\
+ & =
+ ∑_{isUser:Bool} Bernoulli(0.005)(isUser) ·
+ ∑_{testPositive:Bool} Bernoulli(if isUser then 0.99 else 0.01)(testPositive) ·
+ Indicator(testPositive) \\
+ & =
+ ∑_{isUser:Bool} Bernoulli(0.005)(isUser) ·
+ Bernoulli(if isUser then 0.99 else 0.01)(true)  \\
+ & =
+ ∑_{isUser:Bool} Bernoulli(0.005)(isUser) ·
+ if isUser then 0.99 else 0.01 · \\
+ & =
+ Bernoulli(0.005)(false) (if false then 0.99 else 0.01) +
+ Bernoulli(0.005)(true) (if true then 0.99 else 0.01) \\
+ & =
+ 0.995 0.01 + 0.005 0.99 \\
+ & = 
+ 0.0149
+\end{align*}
+
+ Compute the numerator:
+
+\begin{align*}
+ total 
+ & =
+ ∑_{isUser:Bool} Bernoulli(0.005)(isUser) ·
+ ∑_{testPositive:Bool} Bernoulli(if isUser then 0.99 else 0.01)(testPositive) ·
+ Indicator(testPositive) ·
+ Indicator(isUser) \\
+ & = 
+ Bernoulli(0.005)(true) ·
+ Bernoulli(if true then 0.99 else 0.01)(true) \\
+ & = 
+ 0.005 ·
+ 0.99 \\
+ & =
+ 0.00495 
+\end{align*}
+
+ So the ratio is: 0.332214765101
+
+*** Exercise: Evaluating the answer introductory problem
+
+Solution.
+
+ \(\frac {ok} {total}\) with:
+
+\begin{align*}
+ ok =
+ & ∫_{ρ:[0..1]} dρ \\
+ & ∑_{b1:[0,1]} b(ρ,b1) · \\
+ & ∑_{b2:[0,1]} b(ρ,b2) · \\
+ & ∑_{b3:[0,1]} b(ρ,b3) · \\
+ & ∑_{b4:[0,1]} b(ρ,b4) · \\
+ & ∑_{b5:[0,1]} b(ρ,b5) · \\
+ & (b1 · b2 · b3 · (1-b4) · b5)
+\end{align*}
+
+\begin{align*}
+ total =
+ & ∫_{ρ:[0..1]} dρ \\
+ & ∑_{b1:[0,1]} b(ρ,b1) · \\
+ & ∑_{b2:[0,1]} b(ρ,b2) · \\
+ & ∑_{b3:[0,1]} b(ρ,b3) · \\
+ & ∑_{b4:[0,1]} b(ρ,b4) · \\
+ & (b1 · b2 · b3 · (1-b4))
+\end{align*}
+
+
+
+(Computing the integrals is daunting! But can your algebra system do it?)
+
+ Reminder:
+ Where: 
+  - \(b(ρ,0) = ρ\)
+  - \(b(ρ,1) = 1-ρ\)
+
+*** Final note on Beta distribution. 
+ If we observe \(n\) reds and \(m\) blues, the posterior distribution
+ for the parameter \(ρ\) is \(Beta(n+1/2, m+1/2)\).
+
+ In particular, the expected value of this proportion is \(\frac {n+0.5}  {n+m+1}\)
+
+ In our example, we do not expect to a \(3/4\) prediction for
+ the ratio of red ball, but rather but \(3.5/5\). (Which is exactly what the
+ program predicts!)
+
+*** Exercise: the children problem
+
+Model the following problem:
+
+A friend of yours has exactly two children. One of them is a boy. What
+is the probability that the other one is a boy?
+
+Solution: file:Pair.hs
+
+*** Exercise: betting on games
+
+ - Consider the game “Sloubi”.
+ - Each player $p$ of Sloubi is assigned a rating $ρ_p$. The rating is
+   intrinsic to each player, and never changes.
+ - There is an element of randomness in Sloubi. In any match, $p$ will
+   win over $q$ if $ρ_p > ρ_q + m$, with $m$ taken in |Normal(0,100)|. 
+   (Even worse players will win, sometimes.)
+ - Alice wins over Bob, Bob wins over Charles and David. What is
+   Alice's probability to win over David in their next game?
+
+**** Solution
+
+     file:Sloubi.hs
+
+* Compositional translation of inference problems into probabilistic programs
+** Montagovian semantics
+
++ Note: a comprehensive course was given in the first week of ESSLLI
+  2021 "Introduction to natural language formal semantics”, by Ph. de
+  Groote and Y. Winter.
+
+As a quick reminder, we can associate types with syntactic categories,
+in the following manner:
+
+#+BEGIN_SRC haskell
+  type CN = Ind → Prop
+  type VP = Ind → Prop
+  type NP = VP → Prop
+  type Quant = CN → NP
+  type Ind = ...
+#+END_SRC
+But what are individuals? It is mysterious!
+
+In fact, Montagovian semantics normally consider Individuals to be
+/abstract/. This means that nothing needs to be known about them to be
+able to interpret phrases. However, if one needs to give specific
+semantics to lexical items (perhaps in specific domains), we need to
+get more concrete.
+
+In fact we keep (nearly) all Montagovian semantics as such, and make
+certain things concrete.
+
+** Interpreting inference problems: recipe.
+ Remember the classic syllogism:
+
+- all men are mortal
+- socrates is a man
+- socrates is mortal?
+
+It can be interpreted as probabilistic program this way:
+
+#+begin: example-src :filename "LingExamples.hs" :defn exampleSocrates0
+exampleSocrates0 = do
+  man ← samplePredicate       -- declare predicate
+  mortal ← samplePredicate    -- declare predicate
+  observe (every man mortal)  -- filter premiss
+  socrates ← sampleInd        -- declare individual ("for some random ...")
+  observe (man socrates)      -- filter premiss
+  return (mortal socrates)    -- conclusion, interpreted by Montagovian semantics
+#+end:
+
+That is:
+- every time we have a new lexical item, we sample it at random
+- every time we have a premiss, we observe it to be true
+  + this means that samples which do not satisfy the premiss will be
+    rejected
+- at the end, we return the truth value of the conclusion
+  + so the probability of the program corresponds to the probability
+    of entailment.
+  
+
+On this example, this means that we quantify |man| over all CNs; so
+the program does not have any /a-priori/ notion of what “man” means
+--- we sample over the whole space of CNs. The distribution for “man”
+gets refined by evidence (in this case “∀(x:man) mortal(x)”,
+“man(socrates)”).  The way, the semantics for programs that we gave
+mean that all worlds where we can find non mortal men will be filtered
+out.
+
+** Interpretation of semantic categories
+
+We still need to chose a definition
+for |samplePredicate|, |sampleInd|.
+
+One would expect the above inference regarding Socrates to hold in
+every possible world. Consequently, we'd like \(ℙ[exampleSocrates0] =
+1\)
+So, the definitions of \(CN\),\(VP\),\(Ind\), etc. must be
+well-chosen so that the above formula evaluates to 1.
+
+The goal is to
+ - interpret each syntactic category as a probabilistic program
+ - interpret each syntactic operator as a function from/to the
+   appropriate spaces.
+ - so that we get meaningful inferences
+
+*** Propositions
+
+We'll simply interpret propositions as Boolean-valued expressions.
+
+#+begin: example-src :filename "LingExamples.hs" :defn "type Prop" 
+type Prop = Probabilistic Bool
+#+end:
+
+*** Individuals
+Fortunately we now have a way to interpret individuals as elements in a space.
+
+Examples: 
+
+- multi-variate normal distribution of dimension $k$
+  - covariance matrix (?)
+- uniform distribution in a box $[0..1]^k$
+  
+#+begin: example-src :filename "LingExamples.hs" :defn sampleInd
+sampleInd = sampleVectorOf (Gaussian 0 1)
+#+end:
+
+- Discussion: what would /you/ choose? Why?
+
+This idea is directly inspired from machine learning: individual
+(situations) can be represented by a vector.
+
+This is indeed used for:
+  - Words
+  - Sentences
+  - Images
+
+*** Reminder: set cardinalities
+
+If \(card(A) = n\), then \(card(A → Bool) = 2^{card({A})}\). So, there are “exponentially many”
+more predicates over a set than there are elements in the set.
+
+A related fact is that \(ℕ\) is countable, but the set of predicates over
+natural numbers \(ℕ → Bool\) is uncountable.
+
+There is an obvious way to integrate over $[0,1]$, but how to
+integrate over $[0,1] → Bool$? How to take “the average” over all possible
+predicates?
+
+*** Space of predicates
+
+We're deliberately going to restrict the set of possible predicates to
+make our endeavour possible.  Hopefully, it's enough to limit oneself
+to a small enough (samplable) subset and still have a useful model.
+
+If words can be represented by a vector, then so can predicates (hopefully).
+
+(NOTE: other ideas would be to sample from a set of programs which implement predicates.)
+
+*** Idea 1
+If an individual is represented by a vector $x$ and a vector $p$
+represents a predicate, then $x$ is said to satisfy the predicate if
+$p ∙ x > 0$. (Ie, both vector are oriented in the same direction in
+the underlying euclidean space.)
+
+
+#+begin: example-src :filename "LingExamples.hs" :defn predicateSimple
+predicateSimple = do
+  v ← sampleNormedVector
+  b ← sample (Gaussian 0 1)
+  return (\x → (b + dotProd x v) > 0)
+#+end:
+
+#+HEADER: :file predicate.svg :imagemagick yes
+#+HEADER: :results output silent :headers '("\\usepackage{tikz}")
+#+HEADER: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+#+BEGIN_src latex
+\begin{tikzpicture}[scale=3.0]
+  \shade [shading=radial] (0,0) circle (1);
+\draw[->] (-2,0)--(2,0) node[right]{$x$};
+\draw[->] (0,-2)--(0,2) node[above]{$y$};
+\clip (-2,-2) rectangle (2,2);
+\draw[xshift=15,rotate=25] (0,-2) -- (0,-1) -- (0,-4)  -- (0,4);
+\fill[xshift=15,rotate=25,color=blue,opacity=0.1] (0,-4) rectangle +(4,8);
+\node at (1, 1) {$\textit{mortals}$};
+\end{tikzpicture}
+#+END_src
+
+                       [[./predicate.svg]]
+
+*** Idea 2: Boxes
+
+
+If an individual is represented by a vector $x$ and a pair of vectors
+$p$ , $q$ represent a predicate, then $x$ is said to satisfy the predicate
+if $x$ is in the box delimited by the corners $p$ and $q$.
+
+   #+begin_src haskell
+   predicate = do
+       p ← sampleVectorOf (Gaussian 0 1)
+       q ← sampleVectorOf (Gaussian 0 1)
+       return (λx. ∀i. pᵢ < xᵢ < qᵢ)
+   #+end_src
+
+*** Idea 3: Your Idea!
+
+Discussion point
+    
+*** Common nouns
+
+Common nouns are interpreted as predicates:
+
+\(⟦CN⟧ = Pred\)
+
+Consequently, any given common noun \(cn\) is a predicate. We can also
+interpret the common noun \(cn\) as the underlying sub-distribution of
+individuals which is filtered by satisfying the predicate associated
+with \(cn\), like so.
+
+#+begin: example-src :filename "LingExamples.hs" :defn sampleSome
+sampleSome cn = do
+  x ← sampleInd
+  observe (cn x)
+  return x
+#+end:
+
+** Interpretation of semantic operators
+*** Generalised quantifiers
+
+ We can defined generalised quantifiers by appealing to the measure of
+ probabilistic programs:
+
+   - |atLeast θ a (λx. φ) = measure (do x ← a; observe (φ)) > θ * measure (a)|
+   - |atMost  θ a (λx. φ) = measure (do x ← a; observe (φ)) < θ * measure (a)|
+
+ Indeed, the statement |observe(φ)| will discard certain samples
+ of |x|, and affect the measure in proportion to the probability of |φ(x)|
+ to hold.
+ 
+ Note that this requires to /evaluate the measure of a program inside a probabilistic program itself/. 
+
+ However so far we have seen only how to evaluate their
+ probabilities. No sweat, we can use an alternative definition, as
+ follows:
+ 
+ Equivalently:
+ #+begin: example-src :filename "LingExamples.hs" :defn atLeast
+ atLeast θ cn vp = probability (do x ← sampleSome cn; return (vp x)) > θ
+ #+end:
+
+ In turn we can define all sorts of generalised quantifiers:
+
+   - |⟦Most cn vp⟧ = atLeast θ ⟦cn⟧ (λx. ⟦vp⟧(x))|
+   - |⟦Few cn vp⟧ = atMost (1-θ) ⟦cn⟧ (λx. ⟦vp⟧(x))|
+
+
+**** Example:
+
+ - most men are mortal
+ - socrates is a man
+ - \(⊨\)? socrates is mortal
+
+ #+begin: example-src :filename "LingExamples.hs" :defn exampleSocrates
+ exampleSocrates = do
+   man ← samplePredicate
+   mortal ← samplePredicate
+   observe (most man mortal)
+   socrates ← sampleInd
+   observe (man socrates)
+   return (mortal socrates)
+ #+end:
+
+**** Example:
+- Few animals fly.
+- Most birds fly.
+- Every bird is an animal.
+- \(⊨\)? most animals are not birds
+
+  
+ #+begin: example-src :filename "LingExamples.hs" :defn exampleBirds
+ exampleBirds = do
+    fly ← samplePredicate
+    bird ← samplePredicate
+    animal ← samplePredicate
+    observe (most bird fly)
+    observe (few animal fly)
+    observe (every bird animal)
+    return (most animal (\x -> not <$> (bird x)))
+
+ 
+#+HEADER: :file birds.svg :imagemagick yes
+#+HEADER: :results output silent :headers '("\\usepackage{tikz}")
+#+HEADER: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+#+BEGIN_src latex
+\begin{tikzpicture}[scale=3.0]
+  \shade [shading=radial] (0,0) circle (1);
+  \draw[->] (-1.25,0) -- (1.25,0); % node[right] {$x$};
+  \draw[->] (0,-1.25) -- (0,1.25); % node[above] {$y$};
+  \clip (-1.25,-1.30) rectangle (1.25, 1.25);
+
+  \draw[xshift=15,rotate=15] (0,-2) -- (0,-1) -- (0,1) node[right] {$\mathit{bird}$} -- (0,2);
+  \fill[xshift=15,rotate=15,color=blue,opacity=0.15] (0,-2) rectangle +(4,4);
+
+  \draw[yshift=-5,xshift=10,rotate=-10] (0,-2) -- (0,-1) node[right] {$\mathit{fly}$} -- (0,1) -- (0,2);
+  \fill[yshift=-5,xshift=10,rotate=-10,color=red,opacity=0.15] (0,-2) rectangle +(4,4);
+
+  \foreach \x/\xtext in {1/1}
+    \draw[shift={(\x,0)}] (0pt,2pt) -- (0pt,-2pt) node[below] {$\xtext$};
+
+  \foreach \y/\ytext in {1/1}
+    \draw[shift={(0,\y)}] (2pt,0pt) -- (-2pt,0pt) node[left] {$\ytext$};
+  \end{tikzpicture}
+#+END_src
+                       [[./birds.svg]]
+
+Same example, but using boxes for predicates:
+
+
+
+#+HEADER: :file birds-box.svg :imagemagick yes
+#+HEADER: :results output silent :headers '("\\usepackage{tikz}")
+#+HEADER: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+#+BEGIN_src latex
+\begin{tikzpicture}[scale=3.0]
+  \draw[->] (-1.25,0) -- (1.25,0); % node[right] {$x$};
+  \draw[->] (0,-1.25) -- (0,1.25); % node[above] {$y$};
+  \clip (-1.25,-1.30) rectangle (1.25, 1.25);
+
+  \fill [fill=black, fill opacity=0.1] (-1,-1) rectangle (1,1);
+  \filldraw [fill=red, fill opacity=0.13]
+
+ (-0.9,-0.4) rectangle (0.65,0.9) node[opacity=1,anchor=north east] {$\mathit{fly}$};
+  \filldraw [fill=blue,  fill opacity=0.13] (-0.2,-0.3) rectangle (1,0.5) node[opacity=1,anchor=north east] {$\mathit{bird}$};
+
+
+  \foreach \x/\xtext in {1/1}
+    \draw[shift={(\x,0)}] (0pt,2pt) -- (0pt,-2pt) node[below] {$\xtext$};
+
+  \foreach \y/\ytext in {1/1}
+    \draw[shift={(0,\y)}] (2pt,0pt) -- (-2pt,0pt) node[left] {$\ytext$};
+  \end{tikzpicture}
+#+END_src
+
+                       [[./birds-box.svg]]
+
+**** Choice of θ
+
+ The above depends on a threshold θ which constitutes the proportion
+ from which most/few/etc. begin to hold.
+     
+ One can choose θ by studying native speakers. However, one should
+ expect that you won't get a single value of θ which will fit all
+ situations, but rather you'll observe a distribution for
+ θ. Probabilistic programs are ideally suited to deal with this.
+
+ #+begin: example-src :filename "LingExamples.hs" :defn exampleSocrates2
+ exampleSocrates2 = do
+   θ ← sample (Beta 5 2) -- for example
+   man ← samplePredicate
+   mortal ← samplePredicate
+   observe (atLeast θ man mortal)
+   socrates ← sampleInd
+   observe (man socrates)
+   return (mortal socrates)
+ #+end:
+
+ Below we'll leave θ abstract.
+
+*** Universal Quantifiers
+
+ We define |forAll a φ| as stochastic certainty of |φ(x)| for elements
+ given by the probabilistic program |a|, namely:
+
+     #+begin_src haskell
+     forAll a φ = probability (do x ← a; return (φ x)) == 1 
+     #+end_src
+
+ Given the above, we can interpret natural language phrases such as
+ “every man is mortal”, as follows:
+
+   - $⟦Every cn vp⟧ = forAll ⟦cn⟧ ⟦vp⟧$
+
+**** Pitfall (SKIP)
+
+ Assume
+
+  - $t = sample (Uniform [-1..1])$
+  - \(φ = (x ≠ 0)\)
+
+ We have:
+
+  - \(\measure{t}              = 2\)
+  - \(\measure{x ← t; observe (φ)} = 2\)
+
+ Indeed, we filtered out a single point --- its measure is 0 
+
+ And according to the above definition:
+
+   - \(⟦∀(x:A). φ⟧ = true\)
+
+ (So this operator really means “for stochastically all” in probabilistic logic)
+
+***** Dealing with this pitfall 
+
+ - attempt to have a precise measure that counts single elements
+   * not computable, because HOL is undecidable
+ - use “soft transitions”
+   * still does not make \(∀x:A. φ\) coincide with the usual definition
+     (but can help with the approximation algorithms in many cases.)
+ - do not use problematic domains
+   * unless otherwise note, this is what we will do.
+
+*** Existential Quantifiers
+
+ One can define existential quantifiers by dualizing universals in
+ either version.
+
+ #+begin_src haskell
+ exist a φ = probability a φ > 0
+ #+end_src
+
+*** Comparatives
+ - Mary is tall
+ - John is tall
+ - “Mary is taller than John”?
+
+
+ We can support graded predicates and comparatives. We do so by
+ generalizing predicates.
+
+ We define |Grade| to be function from individuals to reals.
+
+#+begin: example-src :filename "LingExamples.hs" :defn "type Grade" 
+type Grade = Ind → Probabilistic R
+#+end:
+
+ If the function evaluates to a positive value for individual \(x\),
+ then \(x\) is considered to satisfy the non-scalar retraction of the
+ predicate.
+ #+begin: example-src :filename "LingExamples.hs" :defn is :include-type t
+ is :: Grade → Ind → Prop
+ is g x = g x > 0
+ #+end:
+
+ Then one can also compare individuals with respect to any scalar predicate:
+
+ more :: Grade → Ind → Ind → Prop
+ more g x y = g x > g y
+ #+end:
+
+
+ Eg. to test |more tall mary john|, we check if the 'tallness' of mary
+ is greater than that of john.
+
+**** Idea 1
+
+ The expression $b + d · x$ can be interpreted as a degree to which
+ the individual $x$ satisfies the property characterised by
+ $(b,d)$.
+
+ #+begin: example-src :filename "LingExamples.hs" :defn grade
+ sampleGrade = do
+   v ← sampleNormedVector      -- reference vector for the grade
+   b ← sample (Gaussian 0 1)   -- reference bias
+   return (\x → (b + x · v))
+ #+end:
+
+#+HEADER: :file grade.svg :imagemagick yes
+#+HEADER: :results output silent :headers '("\\usepackage{tikz}" "\\usetikzlibrary{arrows,calc,intersections}")
+#+HEADER: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+#+BEGIN_src latex
+     \begin{tikzpicture}[scale=2]
+       \draw[->] (-3.5,0)--(3.5,0) node[right]{\Large $x$};
+       \draw[->] (0,-2.5)--(0,2.5) node[above]{\Large $y$};
+       \path [name path=boundary] (-3,-2) rectangle (3,2);
+       \clip (-3,-2) rectangle (3,2);
+       \foreach \i in {-3,...,4}
+       {
+         \draw [name path=isotall] (-2+\i,-4) -- (1+\i,4);
+         % \draw [name intersections={of=boundary and isotall}] (intersection-2) -- (intersection-1) node [anchor=west]  {$\i$}; % destroys the drawing 
+       }
+       \fill[color=blue,opacity=0.15] (-2,-4) -- (1,4) -- (10,4) -- (10,-4);
+  \end{tikzpicture}
+#+END_src
+
+
+
+                 [[./grade.svg]]
+
+**** Idea 2
+ The degree to which an individual $x$ satisfies a property
+ characterised by a box centered at \(c\) and of dimensions \(d\) is
+ given by $s(x)$.
+
+ The characteristic vectors c and d are sampled from the vector
+ space. Thus we get:
+
+
+ #+begin_src haskell
+ grade :: P Grade
+ grade = do
+   c ← sample (Gaussian 0 1)
+   d ← sample (Gaussian 0 1)
+   let s x = 1 - max [abs(xᵢ - cᵢ) / dᵢ | i ← [1..n]]
+   return s
+ #+end_src
+
+ This definition entails that the subspace
+ corresponding to a predicate coincides with the space where its degree
+ of satisfaction is positive.
+
+ Remarks:
+   - $s(x) = 1$ iff. $x$ is at the center of the box.
+   - $s(x) > 0$ iff. $x$ is inside the box.
+
+**** Example
+
+ That is, if we observe that “John is taller than Mary”, we will infer
+ that “John is tall” is slightly more probable than “John is not
+ tall”.
+
+ #+begin: example-src :filename "LingExamples.hs" :defn exampleTall
+ exampleTall = do
+   tall ← sampleGrade
+   john ← individual
+   mary ← individual
+   observe (more tall john mary)
+   return (is tall john)
+ #+end:
+
+** Subsective Graded Adjectives
+
+*** Reminder: intersective vs subsective adjectives
+
+We could interpret "socrates is a large man", as |man socrates ∧ large
+socrates|. This is what we call an intersective interpretation.
+
+However, this can pose problems. Consider the following set of statements:
+
+- Dumbo is not a large elephant
+- Mickey is a large mouse
+- Dumbo is larger than Mickey
+
+If Dumbo is not large, but Mickey is large, so how could Dumbo be
+larger than Mickey? The intuitive answer is that when we say "Mickey
+is a large mouse", we mean that Mickey is large *for* a mouse. But he
+can still be small compared to Dumbo (who is not a mouse)!
+
+
+*** Probabilistic interpretation of subsective adjectives
+
+As a way forward, we are going to give an interpretation of “mickey is
+large for a mouse”, by looking for the average size of a mouse, and
+check that the size of mickey is greater than that.
+
+#+begin: example-src :filename "LingExamples.hs" :defn subsectiveIs
+subsectiveIs g cn x = g x > averageFor g cn
+#+end:
+
+and:
+
+#+begin: example-src :filename "LingExamples.hs" :defn averageFor
+averageFor g cn = expectedValue <$> mcmc 1000 sampleGForCn
+  where sampleGForCn = do
+          y ← sampleSome cn
+          return (g y)
+#+end:
+
+And we can now interpret meaningfully  inference problems such as:
+
+ - Dumbo is not a large elephant
+ - Mickey is a large mouse
+ - Most elephant is larger than most mice
+ - $⊨$? Dumbo is larger than Mickey
+
+We do so as follows:
+
+#+begin: example-src :filename "LingExamples.hs" :defn exampleDumbo
+exampleDumbo = do
+  elephant ← samplePredicate
+  mouse ← samplePredicate
+  dumbo ← sampleSome elephant
+  mickey ← sampleSome mouse
+  large ← sampleGrade
+  observe (not <$> (subsectiveIs large elephant dumbo)) 
+  observe (subsectiveIs large mouse mickey)
+  observe (most mouse (\x → most elephant (\y → more large y x)))
+  return (more large dumbo mickey)
+#+end:
+
+* Computations: MCMC, Variational Inference
+So far, we can:
+- evaluate natural language probabilistic syllogisms to probabilistic logic propositions
+- evaluate such probabilities of such propositions as mathematical formulas
+
+BUT:
+- these formulas involve integrals which are typically not easy to
+  compute (when involving non-trivial spaces).
+
+Fortunately there are ways to approximate probabilities directly
+without resorting to symbolic integration.
+
+** Markov Chain Monte Carlo
+
+*** Monte Carlo methods:
+
+Assume a probabilistic program \(t\) returning a value in [0,1].
+To evaluate \(𝔼_{(x∈t)} (x)\):
+ - ~n := 0; q := 0~
+ - repeat:
+   - take a random \(x\) by sampling from \(t\)
+   - ~n := n + 1~
+   - ~q := q + x~
+
+After sufficiently many trials:
+
+ - \(𝔼_{(x∈t)} (x) ≈  \frac q n\)
+
+*** Markov Chain
+- Informally: “a random walk”
+- assume set of states \(S\), and a starting state s₀.
+- for each pair of states \((s,t)\), assume a probability \(P(s,t)\) to
+  transition from \(s\) to \(t\).
+- at each step, transition from a state to another according to the
+  given probabilities.
+- an interesting question: after an infinite number of steps, what is
+  the probability to end at a given state \(s_f\)?
+
+*** MCMC
+
+Sampling in complicated probabilistic program \(t\) is not so
+easy. Typically we have a space with a number of dimensions (the Cartesian
+product of a number of distributions), and a complicated filtering function
+(we can have an \(observe\) statement which depends on a complicated
+condition.)
+
+One way to improve on this method is to *define* a Markov Chain where:
+- each state is an element of the space sampled by \(t\)
+- the transition function is such that, as much as possible, \(s(x,y)
+  > s(x,y')\) if \(P_t(y) > P_t(y')\).
+- note that this is not an easy thing to define when there are many
+  variables (also, with if statements (and |observe|), the existence
+  of variables depend on the value of others.)
+
+We use this kind of random walk to sample in \(t\), and apply the monte
+carlo method as usual to evaluate the proportion.
+
+Potential issues:
+- You never find a valid \(x∈t\) to start with
+- The space is divided in regions which are not connected, or a walk
+  from one to the other is highly improbable.
+
+** Choice of priors
+In any program portion |x ← t; observe φ(x)| a potential pitfall is to chose $t$ too wide, (eg. \(x\)
+could be a tuple of many independent variables),
+followed by a very restrictive $φ$. In such situation the Monte Carlo
+algorithm will spend a lot of time sampling elements of $t$ only to
+discard them. It is better to restrict $t$ to one of its subspaces $u$
+so that $φ$ becomes more easy to satisfy on $u$.
+
+** Inner evaluation of proportions
+When using quantifiers, we evaluate more proportions/measures, and an
+inner instance of the MCMC algorithm must be employed. This can be
+very slow! A potential way out: when we use boxes some integrals can
+be computed symbolically and we save much resources.
+
+** Gradient descent
+
+Assume a set of parameters \(θ\) for your model. How to take into
+account an observation $e$? We do:
+
+Together with the model, the parameters yield an estimated probability for \(e\) to occur:
+
+\(P(e ∣ θ)\).
+
+Using Bayesian reasoning, we can update \(θ\):
+
+\(P(θ ∣ e) ∝ P(e∣θ) × P(θ)\)
+
+Question: what is the normalisation factor?
+
+But this requires keeping track of the whole *distribution* of possible parameters θ.
+
+An alternative is to keep a single (the “best”) value of θ, and take
+into account events by gradient descent. To take $e$ into account, compute
+
+\(g = \frac d {dθ} P(e ∣ θ)\)
+
+and \(θ := θ - α g\)
+
+where \(α\) is your learning rate.
+
+** More methods!
+
+Any mixture of the above is thinkable. (Sample several \(θ\) and do
+gradient decsent for each of them, etc.)
+
+** Choice of prior (again)
+The (Uniform 0 1) prior is biasing the result towards \(1/2\). In order
+not to bias the result, one should use the Jeffrey's prior, which in
+this case is \(Beta(0.5, 0.5)\).
+
+The Jeffrey's prior is given by the square root (the determinant of)
+the Fisher information (matrix) I. (I = variance of the derivative of
+log of density.)
+
+** Haskell
+
+Example implementation of MCMC in Haskell
+
+[[file:~/repo/gu/PNLS/Frontend/MCMC.hs::mcmc][Link]]
+
+** More Probabilistic programming packages
+- STAN: https://mc-stan.org/
+- WebPPL http://dippl.org/
+- And many, many, many papers about real and idealised probabilistic
+  programming languages.
+
+* Test suite for Probabilistic Inference, Outlook
+** Building a corpus of probabilistic inference
+   Data driven approaches need corpora to learn. But, a corpus is also
+   important for testing systems to establish their strengths,
+   weakness, robustness, etc.  For natural language inference, there
+   are several corpuses, including FraCas and SICK.  However, apart
+   from a corpus designed in CLASP, no corpus exists for probabilistic
+   inference problems.
+*** Generalized quantifiers
+    Quantification with most, few, many, several, etc. give rise to non-logical inference.
+    While in building a testuite for probabilistic inference they are irreplaceable,
+    we should limit ourselves not to overuse them as their complex semantic
+    nature does not make easily available various meanings that can be otained in the case 
+    of standard, universal quantification.
+    - Every man has a car. (Not too hard to comprehend its meaning albeit ambiguous)
+    - Every man can drive every car. (Not too hard to understand)
+    - Most men can drive most cars. (What does that mean exactly?)
+    - Many men love fast cars but not always can afford them. (always - referes to many men?: TODO check English)
+*** Bare plurals, Generics, and Indefinite Noun phrases
+
+    One has to be careful when dealing with bare plurals as they have (al least) two kinds of meanings:
+    They serve as generalized quantifiers (like most) and they also may carry generic meaning
+    - Ducks lay eggs. (Generic because it's not equivalent to Most ducks lay egss or all ducks lay egss)
+    - Small ducks do not trust humans. (Generalize quantifier usage ~ most small ducks don't trust humans)
+    - Honeybees produce beeswax. (Generic because, for example, queens do not produce any beeswax)  
+      
+    While indefinite noun phrases in Montague Grammar are translated with the help of existnetial quantifier,
+    they also exhibit traits of generic readings:
+    
+    - A lion has a mane. (Generic: only adult male lions do)
+    - An adult male lion has a mane. (~ All typical adult male lions have manes)
+    - A lion saw a zebra.
+
+*** Adverbs of frequency
+    Adverbs of frequency, e.g., seldom, frequntly, rarely, couple of times per day, etc. 
+    Context dependent: 
+    - John frequently goes to Paris 
+    - John frequently takes French classes 
+    - John frequently gets distracted during a lecture 
+    - John frequently sips water during a day
+    
+    Adverbs of frequency interact with quantifiers.
+*** Adjectives and Comparatives derived from them
+    Consider:
+    Few people are basketball players.
+    Basketball players are taller than most non basketball players.
+    John is a basketball player.    
+    )===>
+    John is taller than many people.
+    
+    Consider another example:
+    
+    John is taller than Mary.
+    Mary is taller than Bob.
+    )===>
+    John is taller than Bob.
+
+    Another questions: Is John tall?
+
+** Evaluation criteria of a probabilistic inference system against the corpus
+   How to evaluate an inference, on what scale: Yes∣No, Yes∣NA∣No, Yes∣Kind of Yes∣NA∣Kind of No∣No, etc.
+   Our scale: [0,1]
+   Valid inference has a probability 0.5+x
+   Invalid inference has a probability 0.5-y 
+
+   Most vampires are sleepy.
+   Dracula is a vampire.
+   )===>
+   Dracula is sleepy.     (Probable with d1)
+
+   Almost all vampires are sleepy.
+   Dracula is a vampire.
+   )===>
+   Dracula is sleepy.     (Probable with d2)
+
+   Question: If Almost all > Most, should it be that d2>d1?
+
+     
+   Question: d1 VS d3? d2 VS d3?
+
+
+   All vampires are sleepy.
+   Dracula is probably a vampire.
+   ------------------------------
+   Dracula is sleepy.     (Probable with d4) 
+   
+   Question: d1 VS d4? d2 VS d4? d3 VS d4?
+
+   In general, if we define a notion of monotonicity in premises, 
+   would our notions of inference be compatible with them?
+   
+** Probabilistic approach to pragmatics
+*** The Rational Speech Act (RSA) model
+    A popular approach to pragmatics is the RSA model. There is a
+    whole ESSLLI course on this! We won't get into the details, but a
+    quick outline is the following.
+
+RSA assumes two agents, a listener \Li{} and a speaker \Spk{}. \Spk{}
+utters a declarative sentence \(u\) heard by \Li{}, without
+transmission error. The point of RSA is to model how, assuming Gricean
+cooperativeness between \Spk{} and \Li{}, \Li{} should disambiguate
+among possible interpretations of \(u\).
+
+1. Does u literally mean φ? For this we may use the model described
+   above. (The uncertainty over the meaning of the utterance u is
+   represented by a parameter θ.)
+
+  \(P_{L₀}(φ   ∣ u)   = 𝔼_{θ ∈ Parameters}[⟦u⟧ᶿ ⊢ φ]\)
+
+2. The (gricean) speaker chooses $u$ to (soft-)maximize the probability
+   that L understands φ:
+
+  \(P_{S₁}(u   ∣ φ)   ∝ (P_{L₀}(φ   ∣ u) / C(u))^{α}\)                  
+
+3. The (pragmatic) speaker considers the meaning of u in proportion to
+   the estimated choices of the (gricean) speaker.
+
+  \(P_{L₁}(φ   ∣ u)   ∝ P_{S₁}(u ∣ φ)  × P(φ)\)
+
+
+Take away message: you can use an RSA layer *on top of* our
+probabilistic models.
+
+*** Numbers
+
+    S: “I ate 5 cookies”.
+
+    How many cookies did S eat?
+
+    ⟦I ate n cookies⟧ = ∃m ≥ n  eat_cookies(I, m)
+
+    If we consider only 3 possible utterances and meanings (say, there
+    were 7 cookies in the box), we get the literal probability
+    assignment \(P_{L₀}(φ ∣ u)\):
+
+    | Utterance       | ate(5) | ate(6) | ate(7) |
+    |-----------------+--------+--------+--------|
+    | I ate 5 cookies |    1/3 | 1/3    | 1/3    |
+    | I ate 6 cookies |      0 | 1/2    | 1/2    |
+    | I ate 7 cookies |      0 | 0      | 1      |
+
+softmax by column (α=4), assuming all utterances have the same cost,
+yields \(P_{S₁}(u ∣ φ)\):
+
+    | Utterance       | ate(5) | ate(6) | ate(7) |
+    |-----------------+--------+--------+--------|
+    | I ate 5 cookies |      1 |   0.16 |   0.01 |
+    | I ate 6 cookies |      0 |   0.84 |   0.06 |
+    | I ate 7 cookies |      0 |      0 |   0.93 |
+
+Normalising by row yields \(P_{L₁}(φ   ∣ u)\)
+
+    | Utterance       | ate(5) | ate(6) | ate(7) |
+    |-----------------+--------+--------+--------|
+    | I ate 5 cookies |   0.85 |   0.14 |   0.01 |
+    | I ate 6 cookies |      0 |   0.93 |   0.07 |
+    | I ate 7 cookies |      0 |      0 |      1 |
+
+
+Exercises:
+ - iterate the process (to get a level-2 pragmatic listener)
+ - Repeat everything with α=∞
+ - Consider the utterance “I ate 2 cookies”. 
+
+We won't further discuss the merits of this model.
+
+In the above we have:
+
+  1. used a “strict” probabilistic semantics
+  2 and laid a pragmatic component on top of it.
+
+BUT we can also *bake in* pragmatics into the /raw/ probabilitic meaning.
+
+For example,
+⟦I ate n cookies⟧ = eat_cookies(I, m) where m is chosen in a Poisson distribution with mode n.
+
+*** The proviso problem                                              :Sandro:
+- If John goes to the sea he will take his cat with
+  him. (Presupposition is that the cat and going to the sea are not related;
+  so, John definitely has a cat.)
+- If John goes to the sea then he will take his scuba. (Presupposition
+  is that the scuba and the sea are related; so John doesn't need to
+  have a scube, but he might get one for this purpose.)
+
+  How to model this? Lassiter (2012) proposes to use
+  probabilistic approach for that, which we adopt in our settings.
+  Assume we have a candidate pressuposition.  If the candidate
+  pressuposition π is not probabilistically inferrable from the initial
+  sentence, then we consider π to be an actual
+  pressuposition. Otherwise, π doesn't qualify for a pressuposition.
+
+* References
+
+- Variational Inference: A Review for Statisticians (by David M. Blei, Alp Kucukelbir, and Jon D. McAuliffe)
+  https://arxiv.org/pdf/1601.00670.pdf 
+
+- Variational Inference (lecture notes by David M. Blei)
+https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational-inference-i.pdf
+
+- A Tutorial on Variational Bayesian Inference
+  http://www.orchid.ac.uk/eprints/40/1/fox_vbtut.pdf
+
+- Bayesian inference
+  https://en.wikipedia.org/wiki/Bayesian_inference#Bayesian_inference
+
+- Dealing with observing zero-measure events
+  Paradoxes of Probabilistic Programming And How to Condition on Events of Measure Zero with Infinitesimal Probabilities
+  Jules Jacob, 2021
+
+- Presuppositions, provisos, and probability
+  Semantics & Pragmatics Volume 5, Article 2: 1–37, 2012
+  Lassiter, Daniel
+  https://semprag.org/index.php/sp/article/view/sp.5.2/pdf
+
+- PROBABILISTIC INFERENCE AND THE CONCEPT OF TOTAL EVIDENCE
+  J. Hintikka & P. Suppes (Eds), Aspects of Inductive Logic, Amsterdam: North-Holland, 1966, pp. 49-65
+  PATRICK SUPPES 
+  https://suppescorpus.sites.stanford.edu/sites/g/files/sbiybj7316/f/probabilistic_inference_and_the_concept_of_total_evidence_71.pdf
+
+** Our references
+
+- A Compositional {Bayesian} Semantics for Natural Language
+  JP Bernardy, R Blanck, S Chatzikyriakidis, S Lappin
+  Proceedings of the First International Workshop on Language Cognition and Computational Models
+
+- Bayesian inference semantics: A modelling system and a test suite
+  Jean-Philippe Bernardy, Rasmus Blanck, Stergios Chatzikyriakidis, Shalom Lappin, Aleksandre Maskharashvili
+  Proceedings of the Eighth Joint Conference on Lexical and Computational Semantics (* SEM) 2019
+
+- Predicates as Boxes in Bayesian Semantics for Natural Language
+  JP Bernardy, R Blanck, S Chatzikyriakidis, S Lappin, A Maskharashvili
+  Proceedings of the 22nd Nordic Conference on Computational Linguistics, 333-337
+
+- Jean-Philippe Bernardy, Rasmus Blank, Aleksandre Maskharashvili, 
+  “A Logic with Measurable Spaces Fornatural Language Semantics”,
+  AMIM Vol.25 No.2, 2020, pp. 31-43
+
+- Julian Grove, Jean-Philippe Bernardy, Stergios Chatzikyriakidis
+  From compositional semantics to Bayesian pragmatics via logical inference
+  NALOMA 2021
+
+
+
+
+
+* TODOs
+  - move this document and source code to own repository
+

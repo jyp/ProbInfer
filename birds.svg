@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?> 
+<?xml-stylesheet href="latex-mvF1GZ.css" type="text/css"?> 
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="284.92734pt" height="290.41826pt" viewBox="-142.46367 -147.95459 284.92734 290.41826 "> 
+<g transform="translate(0, 142.46367 ) scale(1,-1) translate(0,147.95459 )"> 
+                                           <g stroke="#000" fill="#000">
+ <g stroke-width="0.4">
+ <clipPath id="pgfcp1"><path d=" M 0.0 0.0 M 113.81097 0.0 C 113.81097 62.85687 62.85687 113.81097 0.0 113.81097 C -62.85687 113.81097 -113.81097 62.85687 -113.81097 0.0 C -113.81097 -62.85687 -62.85687 -113.81097 0.0 -113.81097 C 62.85687 -113.81097 113.81097 -62.85687 113.81097 0.0 Z M 0.0 0.0  "/> </clipPath>
+ <g clip-path="url(#pgfcp1)">
+ <g transform="matrix(1,0,0,1,0.0,0.0)">
+ <g transform="matrix(4.53604,0,0,4.53604,0.0,0.0)">
+  <radialGradient id="pgfsh2" fx="0.5" fy="0.5" >
+ <stop offset="0.0" stop-color=" #808080 "/>
+ <stop offset="0.5" stop-color=" #fff "/>
+ <stop offset="1.0" stop-color=" #fff "/>
+ </radialGradient>
+ <g transform="translate(-50.1875,-50.1875)"> 
+ <circle cx="50.1875" cy="50.1875" r="50.1875" style="fill:url(#pgfsh2); stroke:none"/>
+ </g> 
+ </g>
+ </g>
+ </g>
+ <path d=" M -142.26367 0.0 L 141.80368 0.0  " fill="none"/>
+ <g transform="translate(141.80368,0.0)">
+ <g stroke-width="0.31999">
+ <g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linecap="round">
+ <g stroke-linejoin="round">
+ <path d=" M -1.19998 1.59998 C -1.09998 0.99998 0.0 0.09999 0.29999 0.0 C 0.0 -0.09999 -1.09998 -0.99998 -1.19998 -1.59998  " fill="none"/>
+ </g>
+ </g>
+ </g>
+ </g>
+  </g>
+ <path d=" M 0.0 -142.26367 L 0.0 141.80368  " fill="none"/>
+ <g transform="matrix(0.0,1.0,-1.0,0.0,0.0,141.80368)">
+ <g stroke-width="0.31999">
+ <g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linecap="round">
+ <g stroke-linejoin="round">
+ <path d=" M -1.19998 1.59998 C -1.09998 0.99998 0.0 0.09999 0.29999 0.0 C 0.0 -0.09999 -1.09998 -0.99998 -1.19998 -1.59998  " fill="none"/>
+ </g>
+ </g>
+ </g>
+ </g>
+  </g>
+ <clipPath id="pgfcp3"><path d=" M -142.26367 -147.95459 M -142.26367 -147.95459 L -142.26367 142.26367 L 142.26367 142.26367 L 142.26367 -147.95459 Z M 142.26367 142.26367  "/> </clipPath>
+ <g clip-path="url(#pgfcp3)">
+ <path d=" M 118.91301 -219.86621 L 89.4565 -109.9331 L 30.5435 109.9331 L 1.08699 219.86621  " fill="none"/>
+ <g transform="translate(34.07648,106.46089)">
+ <g fill="#000">
+ <text style="stroke:none" transform="scale(1,-1) translate(8.75827,0)" text-anchor="middle"  font-size="10"> 
+<g fill="#000">
+ <g stroke="none"> <tspan font-family="cmti" font-size="10">bird</tspan></g> </g>
+ </text> 
+</g>
+ </g>
+ <g stroke="#00f" fill="#00f">
+ <g stroke-opacity="0.15">
+ <g fill-opacity="0.15">
+ <path d=" M 118.91301 -219.86621 M 118.91301 -219.86621 L 1.08699 219.86621 L 440.81941 337.69223 L 558.64543 -102.04019 Z M 440.81941 337.69223  " stroke="none"/>
+ </g>
+ </g>
+ </g>
+ <path d=" M 0.4746 -244.16608 L 20.2373 -132.08304 L 59.7627 92.08304 L 79.5254 204.16608  " fill="none"/>
+ <g transform="translate(23.77028,-134.58304)">
+ <g fill="#000">
+ <text style="stroke:none" transform="scale(1,-1) translate(5.80898,0)" text-anchor="middle"  font-size="10"> 
+<g fill="#000">
+ <g stroke="none"> <tspan font-family="cmti" font-size="10">fly</tspan> </g> </g>
+ </text> 
+</g>
+ </g>
+ <g stroke="#f00" fill="#f00">
+ <g stroke-opacity="0.15">
+ <g fill-opacity="0.15">
+ <path d=" M 0.4746 -244.16608 M 0.4746 -244.16608 L 79.5254 204.16608 L 527.85756 125.11525 L 448.80675 -323.2169 Z M 527.85756 125.11525  " stroke="none"/>
+ </g>
+ </g>
+ </g>
+ <path d=" M 113.81097 8.0 L 113.81097 -8.0  " fill="none"/>
+ <g transform="translate(111.31097,-17.9774)">
+ <g fill="#000">
+ <text style="stroke:none" transform="scale(1,-1) translate(2.5,0)" text-anchor="middle"  font-size="10"> 
+<g fill="#000">
+ <g stroke="none"> 1 </g> </g>
+ </text> 
+</g>
+ </g>
+ <path d=" M 8.0 113.81097 L -8.0 113.81097  " fill="none"/>
+ <g transform="translate(-16.53297,110.58876)">
+ <g fill="#000">
+ <text style="stroke:none" transform="scale(1,-1) translate(2.5,0)" text-anchor="middle"  font-size="10"> 
+<g fill="#000">
+ <g stroke="none"> 1 </g> </g>
+ </text> 
+</g>
+ </g>
+ </g>
+ </g>
+ </g>
+ 
+                                                                                     </g> 
+</svg> 

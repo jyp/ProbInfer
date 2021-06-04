@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?> 
+<?xml-stylesheet href="latex-oGsOFq.css" type="text/css"?> 
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="413.41675pt" height="300.59332pt" viewBox="-199.36919 -142.4637 413.41675 300.59332 "> 
+<g transform="translate(0, 158.12962 ) scale(1,-1) translate(0,142.4637 )"> 
+                                                            <g stroke="#000" fill="#000">
+ <g stroke-width="0.4">
+ <path d=" M -199.16919 0.0 L 198.7092 0.0  " fill="none"/>
+ <g transform="translate(198.7092,0.0)">
+ <g stroke-width="0.31999">
+ <g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linecap="round">
+ <g stroke-linejoin="round">
+ <path d=" M -1.19998 1.59998 C -1.09998 0.99998 0.0 0.09999 0.29999 0.0 C 0.0 -0.09999 -1.09998 -0.99998 -1.19998 -1.59998  " fill="none"/>
+ </g>
+ </g>
+ </g>
+ </g>
+  </g>
+ <g transform="translate(202.70216,-3.09999)">
+ <g fill="#000">
+ <text style="stroke:none" transform="scale(1,-1) translate(4.00621,0)" text-anchor="middle"  font-size="10"> 
+<g fill="#000">
+ <g stroke="none"> <tspan font-family="cmmi" font-size="12">x</tspan></g> </g>
+ </text> 
+</g>
+ </g>
+ <path d=" M 0.0 -142.2637 L 0.0 141.80371  " fill="none"/>
+ <g transform="matrix(0.0,1.0,-1.0,0.0,0.0,141.80371)">
+ <g stroke-width="0.31999">
+ <g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linecap="round">
+ <g stroke-linejoin="round">
+ <path d=" M -1.19998 1.59998 C -1.09998 0.99998 0.0 0.09999 0.29999 0.0 C 0.0 -0.09999 -1.09998 -0.99998 -1.19998 -1.59998  " fill="none"/>
+ </g>
+ </g>
+ </g>
+ </g>
+  </g>
+ <g transform="translate(-3.69579,148.59666)">
+ <g fill="#000">
+ <text style="stroke:none" transform="scale(1,-1) translate(3.69579,0)" text-anchor="middle"  font-size="10"> 
+<g fill="#000">
+ <g stroke="none"> <tspan font-family="cmmi" font-size="12">y</tspan> </g> </g>
+ </text> 
+</g>
+ </g>
+ <clipPath id="pgfcp1"><path d=" M -170.71646 -113.81097 M -170.71646 -113.81097 L -170.71646 113.81097 L 170.71646 113.81097 L 170.71646 -113.81097 Z M 170.71646 113.81097  "/> </clipPath>
+ <g clip-path="url(#pgfcp1)">
+ <path d=" M -284.52744 -227.62195 L -113.81097 227.62195  " fill="none"/>
+ <path d=" M -227.62195 -227.62195 L -56.90549 227.62195  " fill="none"/>
+ <path d=" M -170.71646 -227.62195 L 0.0 227.62195  " fill="none"/>
+ <path d=" M -113.81097 -227.62195 L 56.90549 227.62195  " fill="none"/>
+ <path d=" M -56.90549 -227.62195 L 113.81097 227.62195  " fill="none"/>
+ <path d=" M 0.0 -227.62195 L 170.71646 227.62195  " fill="none"/>
+ <path d=" M 56.90549 -227.62195 L 227.62195 227.62195  " fill="none"/>
+ <path d=" M 113.81097 -227.62195 L 284.52744 227.62195  " fill="none"/>
+ <g stroke="#00f" fill="#00f">
+ <g stroke-opacity="0.15">
+ <g fill-opacity="0.15">
+ <path d=" M -113.81097 -227.62195 L 56.90549 227.62195 L 569.05487 227.62195 L 569.05487 -227.62195  " stroke="none"/>
+ </g>
+ </g>
+ </g>
+ </g>
+ </g>
+ </g>
+ 
+                                                                           </g> 
+</svg> 
