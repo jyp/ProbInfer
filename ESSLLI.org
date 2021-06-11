@@ -364,10 +364,13 @@ probabilistic in nature.
 * Probability theory, Bayesian Reasoning, Probabilistic programming
 ** Motivational Problem (1)
  You throw two 6-faced dice.
+ # Prior
 
  You observe that the sum is greater than 8
+ # Evidence
 
  What is the probability that the product is greater than 20?
+ # Posterior
 
 Solution: file:DiceExample.hs
 
@@ -918,13 +921,43 @@ One might think that a simple answer is \(\frac 3 4\). But is this
 correct?  Let's try to use the concepts developped so far and write a
 probabilistic program modelling the problem:
 
-file:Balls.hs
+#+begin: example-src :filename "Balls.hs" :defn exampleBalls
+exampleBalls = do
+  -- a priori distribution of the proportion of blue balls.
+  ρ <- sample (Uniform 0 1) -- ρ <- sample (Beta 0.5 0.5) -- alternative
+  -- sample a ball in the bag:
+  let ball = do
+        x <- sample (Bernoulli ρ)
+        return (boolToColor <$> x) 
+  -- sample a red ball:
+  let redBall = do
+        b <- ball  -- take a ball
+        observe (testEq b Red) -- if it is not red, forget this situation.
+  -- sample a blue ball:
+  let blueBall = do
+        b <- ball
+        observe (testEq b Blue)
+  redBall
+  redBall
+  redBall
+  blueBall
+  x <- ball
+  return x
+  where boolToColor :: Bool -> Color
+        boolToColor = \case
+            True -> Blue
+            False -> Red
+#+end:
 
 What do you think is the expected result of this program? This is the
 topic of the rest of the lecture.
 
 *** Meaning of probabilistic programs
-     
+
+Intuitively, probabilistic programs define distributions. However,
+defining distributions directly poses a number of technical
+problems. So instead we define the related notion of integrator.
+
 We define the /integrator/ of \(f(z)\) over a probabilistic program
 \(t\), ($\Sumint_{z∈t} f(z)$) as a generalisation of the
 integration/summation of \(f(x)\) for the possible return values \(z\)
@@ -1014,6 +1047,7 @@ expected value.)
 **** Example: Drug test
  Given |exampleDrug| defined as above (file:DrugTest.hs::exampleDrug)
 
+
  - Compute: $ℙ(exampleDrug)$
 
  - Answer: $\frac {\Sumint_{z∈t} indicator(z)} {\measure {exampleDrug}}$
@@ -1027,19 +1061,19 @@ Solution = \(\frac {ok} {total}\)
  & = \measure t \\
  & =
  ∑_{isUser:Bool} Bernoulli(0.005)(isUser) ·
- ∑_{testPositive:Bool} Bernoulli(if isUser then 0.99 else 0.01)(testPositive) ·
+ ∑_{testPositive:Bool} Bernoulli(if isUser then 0.99 else 0.01)(testPositive) ·
  Indicator(testPositive) \\
  & =
  ∑_{isUser:Bool} Bernoulli(0.005)(isUser) ·
- Bernoulli(if isUser then 0.99 else 0.01)(true)  \\
+ Bernoulli(if isUser then 0.99 else 0.01)(true)  \\
  & =
  ∑_{isUser:Bool} Bernoulli(0.005)(isUser) ·
- if isUser then 0.99 else 0.01 · \\
+ if isUser then 0.99 else 0.01 · \\
  & =
- Bernoulli(0.005)(false) (if false then 0.99 else 0.01) +
- Bernoulli(0.005)(true) (if true then 0.99 else 0.01) \\
+ Bernoulli(0.005)(false) (if false then 0.99 else 0.01) +
+ Bernoulli(0.005)(true)  (if true then 0.99 else 0.01) \\
  & =
- 0.995 0.01 + 0.005 0.99 \\
+ 0.995 × 0.01 + 0.005 × 0.99 \\
  & = 
  0.0149
 \end{align*}
@@ -1057,7 +1091,7 @@ Solution = \(\frac {ok} {total}\)
  Bernoulli(0.005)(true) ·
  Bernoulli(if true then 0.99 else 0.01)(true) \\
  & = 
- 0.005 ·
+ 0.005 ×
  0.99 \\
  & =
  0.00495 

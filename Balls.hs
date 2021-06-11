@@ -7,10 +7,6 @@ import Histograms
 
 data Color = Blue | Red deriving (Eq,Show,Ord)
 
-boolToColor :: Bool -> Color
-boolToColor = \case
-  True -> Blue
-  False -> Red
 
 testEq :: Eq x => Probabilistic x -> x -> Probabilistic Bool
 testEq x y = fmap (== y) x
@@ -37,6 +33,14 @@ exampleBalls = do
   blueBall
   x <- ball
   return x
+  where boolToColor :: Bool -> Color
+        boolToColor = \case
+            True -> Blue
+            False -> Red
+
+
+
+
 
 doIt :: Probabilistic (DistributionApproximation Color)
 doIt = mcmc 100000 exampleBalls
