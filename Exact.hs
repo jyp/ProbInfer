@@ -26,7 +26,8 @@ instance Monad FiniteSpace where
     return (y,p*q)
     
 instance ProbLang FiniteSpace where
-  sample (Bernoulli (Prob p)) = FiniteSpace [(pure True,toLogit p),(pure False,toLogit (1-p))]
+  sample (Bernoulli (Prob p)) = FiniteSpace [(pure True ,toLogit p),
+                                             (pure False,toLogit (1-p))]
   sample (DiscreteUniform (Prob xs)) = FiniteSpace [(pure x,one) | x <- xs]
   sample _ = error "exact computations not supported for continuous spaces"
   factor (Prob l) = FiniteSpace [((),l) | l Prelude.> zero]
