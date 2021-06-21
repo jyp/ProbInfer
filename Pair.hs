@@ -4,7 +4,7 @@ import ProbLang
 import Histograms
 import Exact
 
-data Kid = Boy | Girl deriving (Eq,Show,Read,Ord)
+data Kid = Boy | Girl | Other deriving (Eq,Show,Read,Ord)
 
 randomPair :: ProbLang m => m (Probabilistic (Kid, Kid))
 randomPair = do
