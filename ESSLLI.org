@@ -362,6 +362,7 @@ probabilistic in nature.
 # Muggsy Bogues is 5'3"
 
 * Probability theory, Bayesian Reasoning, Probabilistic programming
+Link to Video lecture: https://youtu.be/XyyPeQ37fhc
 ** Motivational Problem (1)
  You throw two 6-faced dice.
  # Prior
@@ -725,9 +726,9 @@ Let us give a number of overloadings, each in terms of the previous one.
  largely eliminate issues of the \(P(...)\) notation.
 
 *** Probability distributions (1)
- The basic building block to describe possible worlds (probabilistic
- programs) are probability distributions. We will list and discuss
- some of them.
+ The basic characteristic of probabilistic programs is the ability to
+ sample from probability distributions. We will list and discuss some
+ of them.
 
  - \(DiscreteUniform(Ω)\)
    \begin{align*}
@@ -750,14 +751,14 @@ Let us give a number of overloadings, each in terms of the previous one.
 In probabilistic programs, we can sample from a distribution using a special-purpose primitive |sample|. Example:
  
 #+begin_src haskell
- ball = sample (Bernoulli ρ)
+ ballBlue = sample (Bernoulli ρ)
 #+end_src
 
 (The proportion of balls in the bag is \(ρ\) and is unknown)
 
 *** Probability distributions (2)
  - \(Normal(μ,σ)\)
-   - PDF = ${\displaystyle {\frac {1}{\sqrt {2\pi \sigma ^{2}}}}e^{-{\frac {(x-\mu )^{2}}{2\sigma ^{2}}}}}$
+   - PDF(x) = ${\displaystyle {\frac {1}{\sqrt {2\pi \sigma ^{2}}}}e^{-{\frac {(x-\mu )^{2}}{2\sigma ^{2}}}}}$
    - Often used to model a random variable which depends itself on many variables in an unknown way
    - mean = μ
 
@@ -794,6 +795,13 @@ Here, we additionally allow the rest of the program, |u|, to depend on
 (use) the variable |x|.
 Note that this is the /only construction/ that can declare a variable.
 
+
+#+begin_src haskell
+ball = do isBlue ← sample (Bernoulli ρ);
+          return (if isBlue then Blue else Red)
+#+end_src
+
+
 *** Observations
 
  To represent evidence, we introduce the program |observe(φ)|, where φ
@@ -827,12 +835,12 @@ A program sampling two balls, and at least one blue, is:
 
  If we let |die = sample (DiscreteUniform [1..6])|
 
- The program representing situations where the sum of dice is \(> 6\) is :
+ The program representing situations where the sum of dice is \(> 8\) is :
 
 #+begin: example-src :filename "DiceExample.hs" :defn twoDieAbove6
-twoDieAbove6 = do
-  d₁ <- die
-  d₂ <- die
+twoDieAbove8 = do
+  d₁ ← die
+  d₂ ← die
   observe (d₁ + d₂ > 8)
   return (d₁,d₂)
 #+end:
@@ -851,7 +859,7 @@ than 20.
 
  So we could define the probability of φ as:
 
-\(𝔼_{[(x,y)∈twoDieAbove9]}(Indicator(x×y > 20))\)
+\(𝔼_{[(x,y)∈twoDieAbove8]}(Indicator(x×y > 20))\)
 
 
 There is however a convenient way to represent the above expression in
@@ -859,7 +867,7 @@ terms of a probabilistic program directly:
 
 #+begin: example-src :filename "DiceExample.hs" :defn problem1
 problem1 = do
-  (x,y) <- twoDieAbove6
+  (x,y) ← twoDieAbove6
   return (indicator <$> (x*y > 20))
 #+end:
 
@@ -901,11 +909,11 @@ This can be modelled by the following probabilistic program:
 #+begin: example-src :filename "DrugTest.hs" :defn exampleDrug
 exampleDrug = do
   -- prior
-  isUser <- sample (Bernoulli (0.5 * percent))
+  isUser ← sample (Bernoulli (0.5 * percent))
   -- evidence
-  testedPositive <- if_ isUser $ \case
-    True -> sample (Bernoulli (99 * percent))
-    False -> sample (Bernoulli (1 * percent))
+  testedPositive ← if_ isUser $ \case
+    True → sample (Bernoulli (99 * percent))
+    False → sample (Bernoulli (1 * percent))
   observe testedPositive
   -- posterior
   return isUser
@@ -924,29 +932,29 @@ probabilistic program modelling the problem:
 #+begin: example-src :filename "Balls.hs" :defn exampleBalls
 exampleBalls = do
   -- a priori distribution of the proportion of blue balls.
-  ρ <- sample (Uniform 0 1) -- ρ <- sample (Beta 0.5 0.5) -- alternative
+  ρ ← sample (Uniform 0 1) -- ρ ← sample (Beta 0.5 0.5) -- alternative
   -- sample a ball in the bag:
   let ball = do
-        x <- sample (Bernoulli ρ)
+        x ← sample (Bernoulli ρ)
         return (boolToColor <$> x) 
   -- sample a red ball:
   let redBall = do
-        b <- ball  -- take a ball
+        b ← ball  -- take a ball
         observe (testEq b Red) -- if it is not red, forget this situation.
   -- sample a blue ball:
   let blueBall = do
-        b <- ball
+        b ← ball
         observe (testEq b Blue)
   redBall
   redBall
   redBall
   blueBall
-  x <- ball
+  x ← ball
   return x
-  where boolToColor :: Bool -> Color
+  where boolToColor :: Bool → Color
         boolToColor = \case
-            True -> Blue
-            False -> Red
+            True → Blue
+            False → Red
 #+end:
 
 What do you think is the expected result of this program? This is the
@@ -1170,6 +1178,8 @@ Solution: file:Pair.hs
      file:Sloubi.hs
 
 * Compositional translation of inference problems into probabilistic programs
+Link to Video lecture: https://youtu.be/XJugaNpNi_0
+
 ** Montagovian semantics
 
 + Note: a comprehensive course was given in the first week of ESSLLI
@@ -1424,7 +1434,7 @@ sampleSome cn = do
 - \(⊨\)? most animals are not birds
 
   
- #+begin: example-src :filename "LingExamples.hs" :defn exampleBirds
+#+begin: example-src :filename "LingExamples.hs" :defn exampleBirds
  exampleBirds = do
     fly ← samplePredicate
     bird ← samplePredicate
@@ -1433,7 +1443,7 @@ sampleSome cn = do
     observe (few animal fly)
     observe (every bird animal)
     return (most animal (\x -> not <$> (bird x)))
-
+#+end:
  
 #+HEADER: :file birds.svg :imagemagick yes
 #+HEADER: :results output silent :headers '("\\usepackage{tikz}")
