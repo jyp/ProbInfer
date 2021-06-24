@@ -1745,7 +1745,7 @@ exampleDumbo = do
   return (more large dumbo mickey)
 #+end:
 
-* Computations: MCMC, Variational Inference
+* Computations: MCMC, Gradients
 So far, we can:
 - evaluate natural language problems to probabilistic programs
 - evaluate the expected value of such programs as mathematical formulas
@@ -1754,14 +1754,14 @@ In this chapter we'll learn how to evaluate such formulas to numbers.
 
 ** Exact evaluation
 
-Represent a probabilistic program as a list of pairs: \((outcome,probability)\).
+Represent the meaning of a probabilistic program as a list of pairs: \((outcome,probability)\).
 
 Then:
 
 #+begin_src Haskell
 ⟦return k⟧    =   [(k,1)]
 ⟦x <- t; u⟧   =   [(y,p×q) | (x,p) ∈ ⟦t⟧, (y,q) ∈ ⟦u⟧]
-⟦sample d⟧    =   [(PDF d x,x) | x ∈ Ω]
+⟦sample d⟧    =   [(x,P_d(x)) | x ∈ Ω]
 ⟦observe φ⟧   =   [(◇,Indicator(φ))]
 #+end_src
 
@@ -1785,30 +1785,31 @@ Fortunately there are ways to approximate probabilities directly
 without resorting to symbolic integration.
 
 ** Markov Chain Monte Carlo
-
 *** Monte Carlo methods:
 
 Assume a probabilistic program \(t\) returning a value in [0,1].
-To evaluate \(𝔼_(t)\):
+To evaluate \(𝔼(t)\):
  - ~n := 0; q := 0~
  - repeat:
-   - take a random \(x\) by sampling from \(t\)
+   - take a random output \(x\) of \(t\) by sampling from \(t\)
+     - !! If the output is discared (according to observe), then try again
    - ~n := n + 1~
    - ~q := q + x~
 
 After sufficiently many trials:
 
- - \(𝔼_(t) ≈  \frac q n\)
+ - \(𝔼(t) ≈  \frac q n\)
 
 *** Markov Chain
 - Informally: “a random walk”
-- assume set of states \(S\), and a starting state s₀.
+- assume set of states \(S\), and a starting state \(s_i\).
 - for each pair of states \((s,t)\), assume a probability \(P(s,t)\) to
   transition from \(s\) to \(t\).
 - at each step, transition from a state to another according to the
   given probabilities.
 - an interesting question: after an infinite number of steps, what is
   the probability to end at a given state \(s_f\)?
+  + if \(T\) is the transition matrix and \(s_i\) the initial state, $T^\infty s_i$
 
 *** MCMC
 
@@ -1819,17 +1820,29 @@ product of a number of distributions), and a complicated filtering function
 condition.)
 
 One way to improve on this method is to *define* a Markov Chain where:
-- each state is an element of the space sampled by \(t\)
-- the transition function is such that, as much as possible, \(s(x,y)
-  > s(x,y')\) if \(P_t(y) > P_t(y')\).
-- note that this is not an easy thing to define when there are many
-  variables (also, with if statements (and |observe|), the existence
-  of variables depend on the value of others.)
+- each state is an element of the space sampled by \(t\).
+  - for example if we sample two variable \(x\) and \(y\), \((x,y)\) will be one of these possible states.
+  - The probabilistic program gives a probability for the final outcome of every state. Say \(P_t(x,y)\).
+
+- We can setup the random walk between states so that it's probable to
+  walk from a state \((x,y)\) to a state \((x',y')\), if \(P_t(x',y')\) is
+  larger \(P_t(x,y)\)
+
+- This way, after many steps, we are likely to be on a probable state.
+
+- Additionally, once we have found a possible state (one which passes
+  all ~observe~ statements) we can find a new state by taking one step
+  of the random walk. There is no need to "start from scratch" as in
+  the naive Monte Carlo approach.
+
 
 We use this kind of random walk to sample in \(t\), and apply the monte
 carlo method as usual to evaluate the proportion.
 
 Potential issues:
+- Defining the walk is not too easy when there are many variables
+  (also, with if statements (and |observe|), the existence of
+  variables depend on the value of others.)
 - You never find a valid \(x∈t\) to start with
 - The space is divided in regions which are not connected, or a walk
   from one to the other is highly improbable.
@@ -2146,6 +2159,4 @@ https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational
 
 
 
-* TODOs
-  - move this document and source code to own repository
 
