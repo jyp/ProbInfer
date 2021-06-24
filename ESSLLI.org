@@ -1767,9 +1767,9 @@ Then:
 
 This yields an exhaustive list of all possible outcome (a new finite distribution).
 
-But, this cannot work for continuous distributions!
-
 See haskell implementation here: file:Exact.hs
+
+But, this cannot work for continuous distributions!
 
 *** Example: drug test
 
@@ -1834,15 +1834,14 @@ Potential issues:
 - The space is divided in regions which are not connected, or a walk
   from one to the other is highly improbable.
 
-** Structure of the probabilistic program
+*** The Structure of the probabilistic program influences performance
 In any program portion |x ← t; observe φ(x)| a potential pitfall is to chose $t$ too wide, (eg. \(x\)
 could be a tuple of many independent variables),
 followed by a very restrictive $φ$. In such situation the Monte Carlo
 algorithm will spend a lot of time sampling elements of $t$ only to
 discard them. It is better to restrict $t$ to one of its subspaces $u$
 so that $φ$ becomes more easy to satisfy on $u$.
-
-** Inner evaluation of proportions
+*** Inner evaluation of proportions
 When using quantifiers, we evaluate more proportions/measures, and an
 inner instance of the MCMC algorithm must be employed. This can be
 very slow! A potential way out: when we use boxes some integrals can
@@ -1879,15 +1878,6 @@ where \(α\) is your learning rate.
 Any mixture of the above is thinkable. (Sample several \(θ\) and do
 gradient decsent for each of them, etc.)
 
-** Choice of prior (again)
-The (Uniform 0 1) prior is biasing the result towards \(1/2\). In order
-not to bias the result, one should use the Jeffrey's prior, which in
-this case is \(Beta(0.5, 0.5)\).
-
-The Jeffrey's prior is given by the square root (the determinant of)
-the Fisher information (matrix) I. (I = variance of the derivative of
-log of density.)
-
 ** Haskell
 
 Example implementation of MCMC in Haskell
@@ -1896,6 +1886,14 @@ Example implementation of MCMC in Haskell
 ** Returning to our motivating example
 
    file:Balls.hs
+*** Choice of prior (again)
+The (Uniform 0 1) prior is biasing the result towards \(1/2\). In order
+not to bias the result, one should use the Jeffrey's prior, which in
+this case is \(Beta(0.5, 0.5)\).
+
+The Jeffrey's prior is given by the square root (the determinant of)
+the Fisher information (matrix) I. (I = variance of the derivative of
+log of density.)
 
 ** More Probabilistic programming packages
 - STAN: https://mc-stan.org/
