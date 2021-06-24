@@ -44,14 +44,13 @@ type Pred = Ind → Prop
 
 type Grade = Ind → Probabilistic R
 
-is :: Grade → Vec → Prop
+is :: Grade → Ind → Prop
 is g x = g x > 0
 
 averageFor :: Grade → Pred → Probabilistic Double
 averageFor g cn = expectedValue <$> mcmc 1000 sampleGForCn
   where sampleGForCn = do
-          y ← sampleInd
-          observe (cn y)
+          y ← sampleSome cn
           return (g y)
  
 -- -- | Subsected graded adj.
@@ -169,7 +168,7 @@ exampleSocrates0 = do
   man ← samplePredicate       -- declare predicate
   mortal ← samplePredicate    -- declare predicate
   observe (every man mortal)  -- premiss, interpreted using Montegovian semantics
-  socrates ← sampleInd        -- declare individual
+  socrates ← sampleInd        -- declare individual ("for some random ...")
   observe (man socrates)      -- premiss, interpreted using Montegovian semantics
   return (mortal socrates)    -- conclusion, interpreted using Montegovian semantics
 
@@ -224,7 +223,7 @@ exampleDumbo = do
   elephant ← samplePredicate
   mouse ← samplePredicate
   dumbo ← sampleSome elephant
-  mickey ← sampleSome elephant
+  mickey ← sampleSome mouse
   large ← sampleGrade
   observe (not <$> (subsectiveIs large elephant dumbo)) 
   observe (subsectiveIs large mouse mickey)
@@ -241,5 +240,5 @@ exampleBirds = do
    observe (most bird fly)
    observe (few animal fly)
    observe (every bird animal)
-   return (most animal (\x -> not <$> (bird x)))
+   return (most animal (\x → not <$> (bird x)))
 

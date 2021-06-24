@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE UnicodeSyntax #-}
 
 import MCMC
 import Prelude hiding (not)
@@ -8,35 +9,35 @@ import Histograms
 data Color = Blue | Red deriving (Eq,Show,Ord)
 
 
-testEq :: Eq x => Probabilistic x -> x -> Probabilistic Bool
+testEq :: Eq x => Probabilistic x → x → Probabilistic Bool
 testEq x y = fmap (== y) x
 
 exampleBalls :: ProbLang m => m (Probabilistic Color)
 exampleBalls = do
   -- a priori distribution of the proportion of blue balls.
-  ρ <- sample (Uniform 0 1) -- ρ <- sample (Beta 0.5 0.5) -- alternative
+  ρ ← sample (Uniform 0 1) -- ρ ← sample (Beta 0.5 0.5) -- alternative
   -- sample a ball in the bag:
   let ball = do
-        x <- sample (Bernoulli ρ)
+        x ← sample (Bernoulli ρ)
         return (boolToColor <$> x) 
   -- sample a red ball:
   let redBall = do
-        b <- ball  -- take a ball
+        b ← ball  -- take a ball
         observe (testEq b Red) -- if it is not red, forget this situation.
   -- sample a blue ball:
   let blueBall = do
-        b <- ball
+        b ← ball
         observe (testEq b Blue)
   redBall
   redBall
   redBall
   blueBall
-  x <- ball
+  x ← ball
   return x
-  where boolToColor :: Bool -> Color
+  where boolToColor :: Bool → Color
         boolToColor = \case
-            True -> Blue
-            False -> Red
+            True → Blue
+            False → Red
 
 
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE UnicodeSyntax #-}
 {-# LANGUAGE LambdaCase #-}
 module DrugTest where
 
@@ -11,11 +12,11 @@ percent = 0.01
 exampleDrug :: ProbLang m => m (Probabilistic Bool)
 exampleDrug = do
   -- prior
-  isUser <- sample (Bernoulli (0.5 * percent))
+  isUser ← sample (Bernoulli (0.5 * percent))
   -- evidence
-  testedPositive <- if_ isUser $ \case
-    True -> sample (Bernoulli (99 * percent))
-    False -> sample (Bernoulli (1 * percent))
+  testedPositive ← if_ isUser $ \case
+    True → sample (Bernoulli (99 * percent))
+    False → sample (Bernoulli (1 * percent))
   observe testedPositive
   -- posterior
   return isUser

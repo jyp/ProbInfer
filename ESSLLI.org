@@ -837,7 +837,7 @@ A program sampling two balls, and at least one blue, is:
 
  The program representing situations where the sum of dice is \(> 8\) is :
 
-#+begin: example-src :filename "DiceExample.hs" :defn twoDieAbove6
+#+begin: example-src :filename "DiceExample.hs" :defn twoDieAbove8
 twoDieAbove8 = do
   d₁ ← die
   d₂ ← die
@@ -867,7 +867,7 @@ terms of a probabilistic program directly:
 
 #+begin: example-src :filename "DiceExample.hs" :defn problem1
 problem1 = do
-  (x,y) ← twoDieAbove6
+  (x,y) ← twoDieAbove8
   return (indicator <$> (x*y > 20))
 #+end:
 
@@ -1220,10 +1220,10 @@ It can be interpreted as probabilistic program this way:
 exampleSocrates0 = do
   man ← samplePredicate       -- declare predicate
   mortal ← samplePredicate    -- declare predicate
-  observe (every man mortal)  -- filter premiss
+  observe (every man mortal)  -- premiss, interpreted using Montegovian semantics
   socrates ← sampleInd        -- declare individual ("for some random ...")
-  observe (man socrates)      -- filter premiss
-  return (mortal socrates)    -- conclusion, interpreted by Montagovian semantics
+  observe (man socrates)      -- premiss, interpreted using Montegovian semantics
+  return (mortal socrates)    -- conclusion, interpreted using Montegovian semantics
 #+end:
 
 That is:
@@ -1325,7 +1325,7 @@ the underlying euclidean space.)
 predicateSimple = do
   v ← sampleNormedVector
   b ← sample (Gaussian 0 1)
-  return (\x → (b + dotProd x v) > 0)
+  return (\x → (b + x · v) > 0)
 #+end:
 
 #+HEADER: :file predicate.svg :imagemagick yes
@@ -1435,14 +1435,14 @@ sampleSome cn = do
 
   
 #+begin: example-src :filename "LingExamples.hs" :defn exampleBirds
- exampleBirds = do
-    fly ← samplePredicate
-    bird ← samplePredicate
-    animal ← samplePredicate
-    observe (most bird fly)
-    observe (few animal fly)
-    observe (every bird animal)
-    return (most animal (\x -> not <$> (bird x)))
+exampleBirds = do
+   fly ← samplePredicate
+   bird ← samplePredicate
+   animal ← samplePredicate
+   observe (most bird fly)
+   observe (few animal fly)
+   observe (every bird animal)
+   return (most animal (\x → not <$> (bird x)))
 #+end:
  
 #+HEADER: :file birds.svg :imagemagick yes
@@ -1679,8 +1679,8 @@ type Grade = Ind → Probabilistic R
  #+begin: example-src :filename "LingExamples.hs" :defn exampleTall
  exampleTall = do
    tall ← sampleGrade
-   john ← individual
-   mary ← individual
+   john ← sampleInd
+   mary ← sampleInd
    observe (more tall john mary)
    return (is tall john)
  #+end:
