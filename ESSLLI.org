@@ -37,7 +37,8 @@
 Preamble: finding the learning material
 
 
-- Clone the repository: ~git clone TODO; cd TODO~ (The lecture notes are in ~ESSLLI.org~)
+
+- Clone the repository: ~git clone https://github.com/jyp/ProbInfer; cd ProbInfer~ (The lecture notes are in ~ESSLLI.org~)
 - Install the dependencies using nix (see also https://nixos.org/guides/install-nix.html)
 
 #+begin_src bash
@@ -1746,7 +1747,8 @@ exampleDumbo = do
 #+end:
 
 * Computations: MCMC, Gradients
-So far, we can:
+Link to video lecture: https://youtu.be/ED4i5cF6nPk
+  So far, we can:
 - evaluate natural language problems to probabilistic programs
 - evaluate the expected value of such programs as mathematical formulas
 
@@ -1760,7 +1762,7 @@ Then:
 
 #+begin_src Haskell
 ⟦return k⟧    =   [(k,1)]
-⟦x <- t; u⟧   =   [(y,p×q) | (x,p) ∈ ⟦t⟧, (y,q) ∈ ⟦u⟧]
+⟦x ← t; u⟧    =   [(y,p×q) | (x,p) ∈ ⟦t⟧, (y,q) ∈ ⟦u(x)⟧]
 ⟦sample d⟧    =   [(x,P_d(x)) | x ∈ Ω]
 ⟦observe φ⟧   =   [(◇,Indicator(φ))]
 #+end_src
@@ -1860,42 +1862,11 @@ inner instance of the MCMC algorithm must be employed. This can be
 very slow! A potential way out: when we use boxes some integrals can
 be computed symbolically and we save much resources.
 
-** Gradient descent
-
-Assume a set of parameters \(θ\) for your model. How to take into
-account an observation $e$? We do:
-
-Together with the model, the parameters yield an estimated probability for \(e\) to occur:
-
-\(P(e ∣ θ)\).
-
-Using Bayesian reasoning, we can update \(θ\):
-
-\(P(θ ∣ e) ∝ P(e∣θ) × P(θ)\)
-
-Question: what is the normalisation factor?
-
-But this requires keeping track of the whole *distribution* of possible parameters θ.
-
-An alternative is to keep a single (the “best”) value of θ, and take
-into account events by gradient descent. To take $e$ into account, compute
-
-\(g = \frac d {dθ} P(e ∣ θ)\)
-
-and \(θ := θ - α g\)
-
-where \(α\) is your learning rate.
-
 ** More methods!
 
-Any mixture of the above is thinkable. (Sample several \(θ\) and do
-gradient decsent for each of them, etc.)
+Any mixture of the above is thinkable. (Sample and do
+gradient decsent to determine most probable value of the samples, etc.)
 
-** Haskell
-
-Example implementation of MCMC in Haskell
-
-[[file:~/repo/gu/PNLS/Frontend/MCMC.hs::mcmc][Link]]
 ** Returning to our motivating example
 
    file:Balls.hs
@@ -1910,8 +1881,8 @@ log of density.)
 
 ** More Probabilistic programming packages
 - STAN: https://mc-stan.org/
-- WebPPL http://dippl.org/
-- And many, many, many papers about real and idealised probabilistic
+- WebPPL: http://dippl.org/
+- And many, many, many papers about industrial strength and idealised probabilistic
   programming languages.
 
 * Test suite for Probabilistic Inference, Outlook
