@@ -50,6 +50,7 @@ Preamble: finding the learning material
 - run: ~doit~
   
 * Inference under uncertainty: Problem description
+Link to the video lecture: https://youtu.be/3zQVGohcVd4
 
   At least since Aristotle, reasoning with and within natural language
   has been subject of studies. Traditionally, many of these studies
