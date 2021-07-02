@@ -149,27 +149,31 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
                        - a literal 
                        - application of logical connectives to formulae
                        - application of a quantifier to a formula: ∀x(A) or ∃x(A)
+
   
-  - Pluto is a pet                     :    PET(pluto)
-  - Goofy hugs Pluto                   :    HUG(goofy, pluto)
-  - Pluto is a dog and a star          :    DOG(pluto) & STAR(pluto)
-  - If Goofy is late, Pluto barks      :    LATE(goofy) → BARK(pluto) 
-  - Pluto is not mortal                :    ¬MORTAL(pluto)
-  - Either Pluto or Goofy barked       :    BARK(pluto) ∨ BARK(goofy)
-  - A man walks                        :    ∃x(MAN(x) & WALK(x))
-  - Every man walks                    :    ∀x(MAN(x) → WALK(x))
-  - Every woman saw Joe                :    ∀x(WOMAN(x) → SEE(x,joe)) 
-  - Every woman saw a man              :    ∀x(WOMAN(x) → ∃y(MAN(y) & SEE(x,y)))
-                                       :    ∃y(MAN(y) & ∀x(WOMAN(x) → SEE(x,y)))
+  | Pluto is a pet                | PET(pluto)                           |
+  | Goofy hugs Pluto              | HUG(goofy, pluto)                    |
+  | Pluto is a dog and a star     | DOG(pluto) & STAR(pluto)             |
+  | If Goofy is late, Pluto barks | LATE(goofy) → BARK(pluto)            |
+  | Pluto is not mortal           | ¬MORTAL(pluto)                       |
+  | Either Pluto or Goofy barked  | BARK(pluto) ∨ BARK(goofy)            |
+  | A man walks                   | ∃x(MAN(x) & WALK(x))                 |
+  | Every man walks               | ∀x(MAN(x) → WALK(x))                 |
+  | Every woman saw Joe           | ∀x(WOMAN(x) → SEE(x,joe))            |
+  | Every woman saw a man         | ∀x(WOMAN(x) → ∃y(MAN(y) & SEE(x,y))) |
+  |                               | ∃y(MAN(y) & ∀x(WOMAN(x) → SEE(x,y))) |
 
    Example of FOL usage:
 
+   
+   #+begin_example
    ____ENGLISH_______________________FOL_TRANSLATION__________
    | Mary is a woman                  WOMAN(mary)            | 
    | Mary walks                       WALK(mary)             |
    | )===>                            )===>                  |
    | A woman walks                    ∃x(WOMAN(x) & WALK(x)) |
    -----------------------------------------------------------
+   #+end_example
    How to prove ∃x(WOMAN(x) & WALK(x)) from the premises WOMAN(mary) and WALK(mary)?
    In FOL, it's quite natural to have the following rule: 
    If A(k) holds, then ∃x(A(x)) also holds (where k is a term and x is not free in A(k)).
@@ -207,14 +211,14 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   Not all inferences are logical though. Consider the following
   inference problems:
 
-  - Teddy just got home.                             ⊨? Teddy is hungry.
-  - Teddy just drank several glasses of milk.        ⊨? Teddy is not hungry.
-  - Teddy loves cars.                                ⊨? Teddy drives a car.
-  - Teddy hugged a cat.                              ⊨? Teddy got a cat. 
-  - Teddy enjoys listening to Led Zeppelin.          ⊨? Teddy loves English bands.
-  - Teddy is 18 months old.                          ⊨? Teddy weights around 15 kg.
-  - Teddy can mimic dogs and cats.                   ⊨? Teddy can speak Georgian.
-  - ⊨? Teddy is a bear.
+  | Teddy just got home.                      | $⊨$? Teddy is hungry.            |
+  | Teddy just drank several glasses of milk. | $⊨$? Teddy is not hungry.        |
+  | Teddy loves cars.                         | $⊨$? Teddy drives a car.         |
+  | Teddy hugged a cat.                       | $⊨$? Teddy got a cat.            |
+  | Teddy enjoys listening to Led Zeppelin.   | $⊨$? Teddy loves English bands.  |
+  | Teddy is 18 months old.                   | $⊨$? Teddy weights around 15 kg. |
+  | Teddy can mimic dogs and cats.            | $⊨$? Teddy can speak Georgian.   |
+  |                                           | $⊨$? Teddy is a bear.            |
 
   One can imagine that the above examples, can be justified by using
   common-sense knowledge.  Speakers, in many cases, may make
@@ -270,13 +274,13 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   no), we have so called vague (or generalized) quantifiers e.g.,
   most, almost every, many, almost none of, etc.
 
-  - Most dogs bark.            Goofy is a dog.              $⊨$? Goofy barks.
-  - Almost no cat barks.       Tom is a cat.                $⊨$? Tom doesn't bark.           
-  - Cats rarely bite.          Tom is a cat.                $⊨$? Tom doesn't bite.
-  - Dogs usually are smart.    Pluto is a dog.              $⊨$? Pluto is friendly.
-  - Many cats sleep.           Tom is a cat.                $⊨$? Tom sleeps.
-  - Mice are not lovely.       Micky is an atypical mouse.  $⊨$? Micky is lovely.
-
+  | Most dogs bark.         | Goofy is a dog.             | $⊨$? Goofy barks.       |
+  | Almost no cat barks.    | Tom is a cat.               | $⊨$? Tom doesn't bark.  |
+  | Cats rarely bite.       | Tom is a cat.               | $⊨$? Tom doesn't bite.  |
+  | Dogs usually are smart. | Pluto is a dog.             | $⊨$? Pluto is friendly. |
+  | Many cats sleep.        | Tom is a cat.               | $⊨$? Tom sleeps.        |
+  | Mice are not lovely.    | Micky is an atypical mouse. | $⊨$? Micky is lovely.   |
+  
 
 ** Linguistic phenomena involved in probabilistic inferences
 
@@ -293,9 +297,9 @@ probabilistic in nature.
     A question to think about: Why is that so?
         
             Hint: 
-                 - Every vampire is sleeping <===> It is not true
+                 - Every vampire is sleeping \(⟺\) It is not true
                       that there is a vampire who isn't sleeping
-                 - A vampire is sleeping <====> It is not true that
+                 - A vampire is sleeping \(⟺\) It is not true that
                                           no vampire is sleeping)
 
     
@@ -355,19 +359,25 @@ probabilistic in nature.
     That is, we can derive from graded (gradable) properties a way of measuring and comparing objects
     that these properties can be applied. 
 
+    #+begin_example
     John is taller than most people.
     -------------------------------
     $⊨$? John is tall.
+    #+end_example
 
+    #+begin_example
     Few people are taller than John.
     ------------------------------
     $⊨$? John is tall.
+    #+end_example
 
+    #+begin_example
     NBA players are taller than most people in U.S.
     Few people are NBA players. 
     Muggsy Bogues is an NBA player.
     ---------------------------------------------
     $⊨$? Muggsy Bogues is taller than most people in U.S.
+    #+end_example
 
 
 # A total of 4,509 players have played in the NBA.
