@@ -60,14 +60,16 @@ Preamble: finding the learning material
   that, updating knowledgebase, etc.
 
   Together with logical aspects, human linguistic activity as well
-  involves reasoning with and about incomplete, uncertain, vague
+  involves reasoning with and about incomplete, uncertain, vague, implicit
   information. This includes making inferences, drawing conclusions 
   with uncertain information at hand. 
   
 ** Logic as the means of categorical judgments/inferences
-   - simple Aristotelian reasoning
-   - limitations of Aristotelian reasoning
+
+   - Aristotelian Syllogisms
+   - limitations of Aristotelian Syllogisms for reasoning
    - (see also “all men are mortal” below)
+
 *** Aristotelian Syllogisms
 
     #+begin_example
@@ -122,27 +124,30 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   
   In short, Aristotelian syllogisms concern with universally quantified
   statements, their subalterns, and negations. 
- 
+  
 *** First-Order Predicate Logic 
+
   In mathematical logics, First-Order Logic (FOL, Predicata Calculus) can
-  be seen as a heir of the Aristotelian syllogisms. 
-  Introduced by Gottlob Frege in the 19th Century, FOL makes use of:
+  be seen as a mathematical heir of the Aristotelian syllogisms. 
+  Introduced by Gottlob Frege in the end of 19th Century, FOL makes use of:
   - logcial connectives (&, ∨, →, ¬)
   - constants and variables (mary, john, 1, 0, 2, x, y, etc.)
   - n-ary predicates (WOMAN, MAN, WALK, HUG, MEET, SEND, LOVE, etc.)
   - n-ary functional symbols (+, -, etc.)
-  - quantifiers ∀x and ∃x where x is a variable
+  - quantifiers ∀x and ∃x, for every variable x
   
-  A ~term~ is obtained by applying n-ary function to constants,
+  - A ~term~ is obtained by applying n-ary function to constants,
   variables, and/or other terms, which are n in total.
-  An ~atomic formula~ is an n_ary predicate whose all places are occupied by
-  terms. 
-  A ~literal (aka molecule)~ is a formula such as P(t1,...,tn) or ¬P(t1,...,tn) 
-  where P is an n-ary predicate symbol and t1,...,tn are terms. 
-  A ~formula~ is either:
+  - An ~atomic formula~ is an n-ary predicate whose all places are occupied by
+  terms, i.e., it is of shape P(t1,...,tn), where P is an n-ary predicate symbol 
+  and t1,...,tn are terms.
+  - A ~literal (aka molecule)~ is an atomic formula or its negation, that is, 
+  it is of shape P(t1,...,tn) or ¬P(t1,...,tn) where P is an n-ary predicate 
+  symbol and t1,...,tn are terms. 
+  - A ~formula~ is either:
                        - a literal 
                        - application of logical connectives to formulae
-                       _ application of a quantifier to a formula: ∀xA or ∃xA
+                       - application of a quantifier to a formula: ∀xA or ∃xA
   
   - Pluto is a pet                     :    PET(pluto)
   - Goofy hugs Pluto                   :    HUG(goofy, pluto)
@@ -194,9 +199,10 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
 #   Given that ∀xA(x) and ∀xB(x), we can conclude ∀x(A(x) & B(x))
 
 
-
+  
 
 ** Inferences that are non-categorical (non-logical inferences)
+
   Not all inferences are logical though. Consider the following
   inference problems:
 
@@ -205,7 +211,8 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   - Teddy loves cars.                                ⊨? Teddy drives a car.
   - Teddy hugged a cat.                              ⊨? Teddy got a cat. 
   - Teddy enjoys listening to Led Zeppelin.          ⊨? Teddy loves English bands.
-  - Teddy is 18 months old.                          ⊨? Teddy weights less than 15 kg.
+  - Teddy is 18 months old.                          ⊨? Teddy weights around 15 kg.
+  - Teddy can mimic dogs and cats.                   ⊨? Teddy can speak Georgian.
   - ⊨? Teddy is a bear.
 
   One can imagine that the above examples, can be justified by using
@@ -217,33 +224,21 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   any classical deductive systems, because they require internalisation a
   large amount of common sense knowledge.
 
-  Here, we limit our discussion to problems which require no external
-  knowledge about the world.  This means in practice that we will
-  focus on problems which are /similar/ to the Aristotelian square,
+  Here, we limit our discussion to problems that do not require external
+  knowledge about the world. And in many of the cases we study, we will
+  be concerned with problems which are /similar/ to the Aristotelian square,
   and generalisations thereof. We will use generalised quantifiers and
-  inference problems built with them, which we call probabilistic
+  inference problems built with them, which we call /probabilistic/
   inference problems.
 
 ** A type of non-logical inference: Probabilistic inference
 
-  Our focus is on sentences which are /similar/ to universally
-  quantified ones.  Instead of traditional, logical quantifiers (every,
-  no), we have so called vague (or generalised) quantifiers e.g.,
-  most, almost every, many, almost none of, etc.
-
-  - Most dogs bark.            Goofy is a dog.              $⊨$? Goofy barks.
-  - Almost no cat barks.       Tom is a cat.                $⊨$? Tom doesn't bark.           
-  - Cats rarely bite.          Tom is a cat.                $⊨$? Tom doesn't bite.
-  - Dogs usually are friendly. Pluto is a dog.              $⊨$? Pluto is friendly.
-  - Many cats sleep.           Tom is a cat.                $⊨$? Tom sleeps.
-  - Mice are not lovely.       Micky is an atypical mouse.  $⊨$? Micky is not lovely.
-
-  One of the main questions that we may ask is the following: Are the
-  rules governing reasoning under uncertainty part of the same system
+  One of the main questions that we want to address is the following: 
+  Are the rules governing reasoning under uncertainty part of the same system
   as the logical rules? Irrespective of their ontological classification,
   those rules are part of human reasoning and are clearly expressed in
-  natural languages (like English) with the help of morpho-syntactic
-  and/or lexical apparatus.
+  natural languages (like English) with the specific morpho-syntactic
+  and/or lexical means.
 
   We call an inference demonstrative if the premises necessitate the
   conclusion. In other words, a demonstrative inference is any
@@ -269,6 +264,19 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   do not necessitate the conclusion but make it /probable/, which we refer to as
   /probabilistic inference/.
 
+  Here, our focus is on sentences which are /similar/ to universally
+  quantified ones.  Instead of traditional, logical quantifiers (every,
+  no), we have so called vague (or generalised) quantifiers e.g.,
+  most, almost every, many, almost none of, etc.
+
+  - Most dogs bark.            Goofy is a dog.              $⊨$? Goofy barks.
+  - Almost no cat barks.       Tom is a cat.                $⊨$? Tom doesn't bark.           
+  - Cats rarely bite.          Tom is a cat.                $⊨$? Tom doesn't bite.
+  - Dogs usually are smart.    Pluto is a dog.              $⊨$? Pluto is friendly.
+  - Many cats sleep.           Tom is a cat.                $⊨$? Tom sleeps.
+  - Mice are not lovely.       Micky is an atypical mouse.  $⊨$? Micky is lovely.
+
+
 ** Linguistic phenomena involved in probabilistic inferences
 
 Lexical and morpho-syntactic apparatus in natural languages (like
@@ -276,6 +284,7 @@ English) allow us to express expressions that we've been arguing are
 probabilistic in nature.
 
 *** Generalized Quantifiers 
+
     Logic-based deductive inference usually involves quantifiers,
     universal (e.g. every, all, no) and existential (e.g. there is a).
     (Recap: In classical logical frameworks, the universal and
@@ -302,19 +311,20 @@ probabilistic in nature.
    While the above sentences give us certainly rich information about
    the current state of affairs (aka the world), one cannot be
    certain when discussing particular instantiations of these
-   sentences. E.g.,
+   sentences. For example:
 
-   - Dracula is a vampire. Is he sleeping? (Probably yes, but one cannot claim it with full certainty.)
+   - Dracula is a vampire. Is he sleeping? 
+   (Probably yes, but one cannot claim it with the full certainty.)
 
-     In this way, we can construct various quantified propositions
-     which would carry probabilistic meaning. One way of thinking
+     We can construct various quantified propositions in English
+     whose meaning has /probabilistic/ flavour. One way of thinking
      about it is to consider a universally quantified proposition and
      instead of the universal quantifier take some generalized
      quantifier; the resultant proposition would not any more state a
      universal property (e.i., one that applies to every element in a
-     domain), but will rather give rise to somewhat vague information.
+     domain), but will rather give rise to somewhat /vague/ information.
      
-*** Adverbs of Frequency : TODO : 
+*** Adverbs of Frequency 
     
     Another source of vagueness are adverbs of frequency, e.g, rarely,
     usually, regularly, frequently, several times a year, probably etc. 
@@ -338,6 +348,7 @@ probabilistic in nature.
    of frequency can be seen as generalized quantifiers over events.)
 
 *** Graded Adjectives and Comparatives
+
     Natural language allows us to express various kinds of properties, some of which
     can be characterized in terms of degrees (scale). For example, cold, colder, too cold, etc.
     That is, we can derive from graded (gradable) properties a way of measuring and comparing objects
@@ -351,11 +362,11 @@ probabilistic in nature.
     ------------------------------
     $⊨$? John is tall.
 
-    NBA players are taller than most people in US.
+    NBA players are taller than most people in U.S.
     Few people are NBA players. 
     Muggsy Bogues is an NBA player.
     ---------------------------------------------
-    $⊨$? Muggsy Bogues is taller than most people in US.
+    $⊨$? Muggsy Bogues is taller than most people in U.S.
 
 
 # A total of 4,509 players have played in the NBA.
