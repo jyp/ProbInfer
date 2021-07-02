@@ -58,7 +58,7 @@ Link to the video lecture: https://youtu.be/3zQVGohcVd4
   More recently, various logic based frameworks where proposed to study
   various aspects of human reasoning, including formalizing notions of
   knowledge, beliefs, hypothesis, making new conclusions based on
-  that, updating knowledgebase, etc.
+  that, updating knowledge base, etc.
 
   Together with logical aspects, human linguistic activity as well
   involves reasoning with and about incomplete, uncertain, vague, implicit
@@ -128,10 +128,10 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   
 *** First-Order Predicate Logic 
 
-  In mathematical logics, First-Order Logic (FOL, Predicata Calculus) can
+  In mathematical logics, First-Order Logic (FOL, Predicate Calculus) can
   be seen as a mathematical heir of the Aristotelian syllogisms. 
   Introduced by Gottlob Frege in the end of 19th Century, FOL makes use of:
-  - logcial connectives (&, ∨, →, ¬)
+  - logical connectives (&, ∨, →, ¬)
   - constants and variables (mary, john, 1, 0, 2, x, y, etc.)
   - n-ary predicates (WOMAN, MAN, WALK, HUG, MEET, SEND, LOVE, etc.)
   - n-ary functional symbols (+, -, etc.)
@@ -148,7 +148,7 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   - A ~formula~ is either:
                        - a literal 
                        - application of logical connectives to formulae
-                       - application of a quantifier to a formula: ∀xA or ∃xA
+                       - application of a quantifier to a formula: ∀x(A) or ∃x(A)
   
   - Pluto is a pet                     :    PET(pluto)
   - Goofy hugs Pluto                   :    HUG(goofy, pluto)
@@ -157,7 +157,7 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   - Pluto is not mortal                :    ¬MORTAL(pluto)
   - Either Pluto or Goofy barked       :    BARK(pluto) ∨ BARK(goofy)
   - A man walks                        :    ∃x(MAN(x) & WALK(x))
-  _ Every man walks                    :    ∀x(MAN(x) → WALK(x))
+  - Every man walks                    :    ∀x(MAN(x) → WALK(x))
   - Every woman saw Joe                :    ∀x(WOMAN(x) → SEE(x,joe)) 
   - Every woman saw a man              :    ∀x(WOMAN(x) → ∃y(MAN(y) & SEE(x,y)))
                                        :    ∃y(MAN(y) & ∀x(WOMAN(x) → SEE(x,y)))
@@ -172,7 +172,7 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
    -----------------------------------------------------------
    How to prove ∃x(WOMAN(x) & WALK(x)) from the premises WOMAN(mary) and WALK(mary)?
    In FOL, it's quite natural to have the following rule: 
-   If A(k) holds, then ∃xA(x) also holds (where k is a term and x is not free in A(k)).
+   If A(k) holds, then ∃x(A(x)) also holds (where k is a term and x is not free in A(k)).
    By assuming WOMAN(mary) and WALK(mary) hold,
    then (WOMAN(mary) & WALK(mary)) holds as well. 
    In this latter formula, we can apply the FOL rule for ∃, we get:
@@ -196,8 +196,8 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
 # Hint:  
 #   For any formulae φ and ψ, it holds: φ & ψ → φ and φ & ψ → ψ  
 #   Given that  (ψ → φ) & (φ → ζ), it follows that ψ → ζ  
-#   For any term k, ∀xA(x) entails A(k) 
-#   Given that ∀xA(x) and ∀xB(x), we can conclude ∀x(A(x) & B(x))
+#   For any term k, ∀x(A(x)) entails A(k) 
+#   Given that ∀x(A(x)) and ∀x(B(x)), we can conclude ∀x(A(x) & B(x))
 
 
   
@@ -222,13 +222,13 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
   context, make specific decisions and take respective steps.
   
   The kind of inferences show above are rather hard to formalize in
-  any classical deductive systems, because they require internalisation a
+  any classical deductive systems, because they require internalization a
   large amount of common sense knowledge.
 
   Here, we limit our discussion to problems that do not require external
   knowledge about the world. And in many of the cases we study, we will
   be concerned with problems which are /similar/ to the Aristotelian square,
-  and generalisations thereof. We will use generalised quantifiers and
+  and generalizations thereof. We will use generalized quantifiers and
   inference problems built with them, which we call /probabilistic/
   inference problems.
 
@@ -267,7 +267,7 @@ conclusion). We may say that the conclusion follows or is entailed from the prem
 
   Here, our focus is on sentences which are /similar/ to universally
   quantified ones.  Instead of traditional, logical quantifiers (every,
-  no), we have so called vague (or generalised) quantifiers e.g.,
+  no), we have so called vague (or generalized) quantifiers e.g.,
   most, almost every, many, almost none of, etc.
 
   - Most dogs bark.            Goofy is a dog.              $⊨$? Goofy barks.
@@ -289,7 +289,7 @@ probabilistic in nature.
     Logic-based deductive inference usually involves quantifiers,
     universal (e.g. every, all, no) and existential (e.g. there is a).
     (Recap: In classical logical frameworks, the universal and
-    existential quantifiers are interdefinable. 
+    existential quantifiers are inter-definable. 
     A question to think about: Why is that so?
         
             Hint: 
@@ -318,7 +318,7 @@ probabilistic in nature.
    (Probably yes, but one cannot claim it with the full certainty.)
 
      We can construct various quantified propositions in English
-     whose meaning has /probabilistic/ flavour. One way of thinking
+     whose meaning has /probabilistic/ flavor. One way of thinking
      about it is to consider a universally quantified proposition and
      instead of the universal quantifier take some generalized
      quantifier; the resultant proposition would not any more state a
@@ -338,9 +338,9 @@ probabilistic in nature.
    - Every vampire is probably friendly.
 
     Are these two equivalent? Maybe! And if yes, then 
-   /probably/ and the genarilzed quantifier /almost all/ have similar semantic effects.
+   /probably/ and the generalized quantifier /almost all/ have similar semantic effects.
 
-   In the following examples, we combine advebrs of frequency and generalized quantifiers:
+   In the following examples, we combine adverbs of frequency and generalized quantifiers:
    - Birds are usually able to fly.  (Similar to:  Most birds are able to fly.)
    - Mammals can rarely fly.         (Similar to:  Almost no mammal can fly.)
    
@@ -405,7 +405,7 @@ Solution: file:DiceExample.hs
 ** Elements of Probability theory                                        
 *** Concept: Probability distribution
 **** Frequency distribution
- Consider a coin, with two faces, nominally labelled “heads” and
+ Consider a coin, with two faces, nominally labeled “heads” and
  “tails”.
 
  Throw it \(n\) times. Consider what you will get.
@@ -462,7 +462,7 @@ Solution: file:DiceExample.hs
  - $∫_{x:Ω} f(x) dx = 1$
 
  Remark: we'll almost never care about the value of \(f\) directly; only
- its behaviour under integrals. That is, the only valid question to ask
+ its behavior under integrals. That is, the only valid question to ask
  is the probability of the coin falling “within an area” — not
  “exactly” at a given point.
 
@@ -778,7 +778,7 @@ In probabilistic programs, we can sample from a distribution using a special-pur
  - \(Beta(α,β)\) with  \(α,β > 0\)
    - $\displaystyle { PDF(x) = \frac {x^{\alpha -1}(1-x)^{\beta -1}}{\mathrm {B} (\alpha ,\beta )}}$ if \(x ∈ [0,1]\), \(0\) otherwise
 
-     where ${\displaystyle \mathrm {B} (\alpha ,\beta )={\frac {\Gamma (\alpha )\Gamma (\beta )}{\Gamma (\alpha +\beta )}}}$  and \(Γ\) is the Gamma function. (just a normalisation factor)
+     where ${\displaystyle \mathrm {B} (\alpha ,\beta )={\frac {\Gamma (\alpha )\Gamma (\beta )}{\Gamma (\alpha +\beta )}}}$  and \(Γ\) is the Gamma function. (just a normalization factor)
 
    - Useful to model bounded variables, with non-uniform distributions.
    - \(Beta(1,1) = Uniform[0,1]\)
@@ -884,7 +884,7 @@ problem1 = do
   return (indicator <$> (x*y > 20))
 #+end:
 
-This way, to evaluate probabilies, the only thing that we need is to
+This way, to evaluate probabilities, the only thing that we need is to
 take the expected value of probabilistic programs. (We will see
 later how to do this.)
 
@@ -917,7 +917,7 @@ do x ← a
  is a drug user?
  #+end_quote
 
-This can be modelled by the following probabilistic program:
+This can be modeled by the following probabilistic program:
 
 #+begin: example-src :filename "DrugTest.hs" :defn exampleDrug
 exampleDrug = do
@@ -939,8 +939,8 @@ exampleDrug = do
  [[*Motivational Problem (2)][link back to the introductory problem]]
 
 One might think that a simple answer is \(\frac 3 4\). But is this
-correct?  Let's try to use the concepts developped so far and write a
-probabilistic program modelling the problem:
+correct?  Let's try to use the concepts developed so far and write a
+probabilistic program modeling the problem:
 
 #+begin: example-src :filename "Balls.hs" :defn exampleBalls
 exampleBalls = do
@@ -980,7 +980,7 @@ defining distributions directly poses a number of technical
 problems. So instead we define the related notion of integrator.
 
 We define the /integrator/ of \(f(z)\) over a probabilistic program
-\(t\), ($\Sumint_{z∈t} f(z)$) as a generalisation of the
+\(t\), ($\Sumint_{z∈t} f(z)$) as a generalization of the
 integration/summation of \(f(x)\) for the possible return values \(z\)
 returned by \(t\).
 
@@ -1320,8 +1320,8 @@ predicates?
 *** Space of predicates
 
 We're deliberately going to restrict the set of possible predicates to
-make our endeavour possible.  Hopefully, it's enough to limit oneself
-to a small enough (samplable) subset and still have a useful model.
+make our endeavor possible.  Hopefully, it's enough to limit oneself
+to a small enough (sampleable) subset and still have a useful model.
 
 If words can be represented by a vector, then so can predicates (hopefully).
 
@@ -1395,9 +1395,9 @@ sampleSome cn = do
 #+end:
 
 ** Interpretation of semantic operators
-*** Generalised quantifiers
+*** Generalized quantifiers
 
- We can defined generalised quantifiers by appealing to the measure of
+ We can defined generalized quantifiers by appealing to the measure of
  probabilistic programs:
 
    - |atLeast θ a (λx. φ) = measure (do x ← a; observe (φ)) > θ * measure (a)|
@@ -1418,7 +1418,7 @@ sampleSome cn = do
  atLeast θ cn vp = probability (do x ← sampleSome cn; return (vp x)) > θ
  #+end:
 
- In turn we can define all sorts of generalised quantifiers:
+ In turn we can define all sorts of generalized quantifiers:
 
    - |⟦Most cn vp⟧ = atLeast θ ⟦cn⟧ (λx. ⟦vp⟧(x))|
    - |⟦Few cn vp⟧ = atMost (1-θ) ⟦cn⟧ (λx. ⟦vp⟧(x))|
@@ -1625,7 +1625,7 @@ type Grade = Ind → Probabilistic R
 **** Idea 1
 
  The expression $b + d · x$ can be interpreted as a degree to which
- the individual $x$ satisfies the property characterised by
+ the individual $x$ satisfies the property characterized by
  $(b,d)$.
 
  #+begin: example-src :filename "LingExamples.hs" :defn grade
@@ -1659,7 +1659,7 @@ type Grade = Ind → Probabilistic R
 
 **** Idea 2
  The degree to which an individual $x$ satisfies a property
- characterised by a box centered at \(c\) and of dimensions \(d\) is
+ characterized by a box centered at \(c\) and of dimensions \(d\) is
  given by $s(x)$.
 
  The characteristic vectors c and d are sampled from the vector
@@ -1806,7 +1806,7 @@ To evaluate \(𝔼(t)\):
  - ~n := 0; q := 0~
  - repeat:
    - take a random output \(x\) of \(t\) by sampling from \(t\)
-     - !! If the output is discared (according to observe), then try again
+     - !! If the output is discarded (according to observe), then try again
    - ~n := n + 1~
    - ~q := q + x~
 
@@ -1850,8 +1850,8 @@ One way to improve on this method is to *define* a Markov Chain where:
   the naive Monte Carlo approach.
 
 
-We use this kind of random walk to sample in \(t\), and apply the monte
-carlo method as usual to evaluate the proportion.
+We use this kind of random walk to sample in \(t\), and apply the Monte
+Carlo method as usual to evaluate the proportion.
 
 Potential issues:
 - Defining the walk is not too easy when there are many variables
@@ -1877,7 +1877,7 @@ be computed symbolically and we save much resources.
 ** More methods!
 
 Any mixture of the above is thinkable. (Sample and do
-gradient decsent to determine most probable value of the samples, etc.)
+gradient descent to determine most probable value of the samples, etc.)
 
 ** Returning to our motivating example
 
@@ -1894,7 +1894,7 @@ log of density.)
 ** More Probabilistic programming packages
 - STAN: https://mc-stan.org/
 - WebPPL: http://dippl.org/
-- And many, many, many papers about industrial strength and idealised probabilistic
+- And many, many, many papers about industrial strength and idealized probabilistic
   programming languages.
 
 * Test suite for Probabilistic Inference, Outlook
@@ -1902,28 +1902,28 @@ log of density.)
    Data driven approaches need corpora to learn. But, a corpus is also
    important for testing systems to establish their strengths,
    weakness, robustness, etc.  For natural language inference, there
-   are several corpuses, including FraCas and SICK.  However, apart
+   are several corpora, including FraCaS and SICK.  However, apart
    from a corpus designed in CLASP, no corpus exists for probabilistic
    inference problems.
 *** Generalized quantifiers
     Quantification with most, few, many, several, etc. give rise to non-logical inference.
-    While in building a testuite for probabilistic inference they are irreplaceable,
+    While in building a testsuite for probabilistic inference they are irreplaceable,
     we should limit ourselves not to overuse them as their complex semantic
-    nature does not make easily available various meanings that can be otained in the case 
+    nature does not make easily available various meanings that can be obtained in the case 
     of standard, universal quantification.
     - Every man has a car. (Not too hard to comprehend its meaning albeit ambiguous)
     - Every man can drive every car. (Not too hard to understand)
     - Most men can drive most cars. (What does that mean exactly?)
-    - Many men love fast cars but not always can afford them. (always - referes to many men?: TODO check English)
+    - Many men love fast cars but not always can afford them. (always - refers to many men?: TODO check English)
 *** Bare plurals, Generics, and Indefinite Noun phrases
 
-    One has to be careful when dealing with bare plurals as they have (al least) two kinds of meanings:
+    One has to be careful when dealing with bare plurals as they have (at least) two kinds of meanings:
     They serve as generalized quantifiers (like most) and they also may carry generic meaning
-    - Ducks lay eggs. (Generic because it's not equivalent to Most ducks lay egss or all ducks lay egss)
+    - Ducks lay eggs. (Generic because it's not equivalent to Most ducks lay eggs or all ducks lay eggs)
     - Small ducks do not trust humans. (Generalize quantifier usage ~ most small ducks don't trust humans)
     - Honeybees produce beeswax. (Generic because, for example, queens do not produce any beeswax)  
       
-    While indefinite noun phrases in Montague Grammar are translated with the help of existnetial quantifier,
+    While indefinite noun phrases in Montague Grammar are translated with the help of existential quantifier,
     they also exhibit traits of generic readings:
     
     - A lion has a mane. (Generic: only adult male lions do)
@@ -1931,7 +1931,7 @@ log of density.)
     - A lion saw a zebra.
 
 *** Adverbs of frequency
-    Adverbs of frequency, e.g., seldom, frequntly, rarely, couple of times per day, etc. 
+    Adverbs of frequency, e.g., seldom, frequently, rarely, couple of times per day, etc. 
     Context dependent: 
     - John frequently goes to Paris 
     - John frequently takes French classes 
@@ -2006,13 +2006,13 @@ among possible interpretations of \(u\).
 
   \(P_{L₀}(φ   ∣ u)   = 𝔼_{θ ∈ Parameters}[⟦u⟧ᶿ ⊢ φ]\)
 
-2. The (gricean) speaker chooses $u$ to (soft-)maximize the probability
+2. The (Gricean) speaker chooses $u$ to (soft-)maximize the probability
    that L understands φ:
 
   \(P_{S₁}(u   ∣ φ)   ∝ (P_{L₀}(φ   ∣ u) / C(u))^{α}\)                  
 
 3. The (pragmatic) speaker considers the meaning of u in proportion to
-   the estimated choices of the (gricean) speaker.
+   the estimated choices of the (Gricean) speaker.
 
   \(P_{L₁}(φ   ∣ u)   ∝ P_{S₁}(u ∣ φ)  × P(φ)\)
 
@@ -2047,7 +2047,7 @@ yields \(P_{S₁}(u ∣ φ)\):
     | I ate 6 cookies |      0 |   0.84 |   0.06 |
     | I ate 7 cookies |      0 |      0 |   0.93 |
 
-Normalising by row yields \(P_{L₁}(φ   ∣ u)\)
+Normalizing by row yields \(P_{L₁}(φ   ∣ u)\)
 
     | Utterance       | ate(5) | ate(6) | ate(7) |
     |-----------------+--------+--------+--------|
@@ -2068,7 +2068,7 @@ In the above we have:
   1. used a “strict” probabilistic semantics
   2 and laid a pragmatic component on top of it.
 
-BUT we can also *bake in* pragmatics into the /raw/ probabilitic meaning.
+BUT we can also *bake in* pragmatics into the /raw/ probabilistic meaning.
 
 For example,
 ⟦I ate n cookies⟧ = eat_cookies(I, m) where m is chosen in a Poisson distribution with mode n.
@@ -2079,14 +2079,14 @@ For example,
   so, John definitely has a cat.)
 - If John goes to the sea then he will take his scuba. (Presupposition
   is that the scuba and the sea are related; so John doesn't need to
-  have a scube, but he might get one for this purpose.)
+  have a cube, but he might get one for this purpose.)
 
   How to model this? Lassiter (2012) proposes to use
   probabilistic approach for that, which we adopt in our settings.
-  Assume we have a candidate pressuposition.  If the candidate
-  pressuposition π is not probabilistically inferrable from the initial
+  Assume we have a candidate presupposition.  If the candidate
+  presupposition π is not probabilistic ally inferrable from the initial
   sentence, then we consider π to be an actual
-  pressuposition. Otherwise, π doesn't qualify for a pressuposition.
+  presupposition. Otherwise, π doesn't qualify for a presupposition.
 
 * References
 
@@ -2141,5 +2141,39 @@ https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational
 
 
 
+# Local Variables:
+# ispell-local-dictionary: "american"
+# End:
 
 
+
+#  LocalWords:  xelatex polycode fmt mathbin LaTeX SumInt usepackage
+#  LocalWords:  DeclareMathOperator tikz usetikzlibrary calc fadings
+#  LocalWords:  automata unicode newcommand ensuremath Spk fontspec
+#  LocalWords:  setmainfont Libertinus setsansfont setmathfont Sumint
+#  LocalWords:  stackengine ensurestackMath stackinset displaystyle
+#  LocalWords:  stackanchor mathchoice ooalign cr hidewidth svg nd cd
+#  LocalWords:  latexpreview Aleksandre Maskharashvili ProbInfer src
+#  LocalWords:  ESSLLI ghci DiceExample hs doit logics Gottlob Frege
+#  LocalWords:  th mary ary pluto joe math formalizing morpho Covid
+#  LocalWords:  rejectable instantiations Muggsy Bogues Sandro dx iff
+#  LocalWords:  overloadings equiprobable areaRoom frac multline sqrt
+#  LocalWords:  DiscreteUniform ballBlue mathrm isBlue blueBall defn
+#  LocalWords:  twoBallsAtLeastOneBlue twoDieAbove DrugTest isUser ok
+#  LocalWords:  exampleDrug testedPositive exampleBalls priori testEq
+#  LocalWords:  boolToColor redBall integrand integrators Sloubi Ph
+#  LocalWords:  testPositive Montagovian de Groote CN Quant socrates
+#  LocalWords:  LingExamples exampleSocrates samplePredicate premiss
+#  LocalWords:  Montegovian sampleInd CNs sampleVectorOf sampleable
+#  LocalWords:  cardinalities Ie predicateSimple sampleNormedVector
+#  LocalWords:  imagemagick imoutoptions iminoptions tikzpicture Pred
+#  LocalWords:  xshift textit cn sampleSome atLeast atMost vp mathit
+#  LocalWords:  exampleBirds yshift foreach xtext ytext filldraw HOL
+#  LocalWords:  forAll stochastically computable dualizing Eg isotall
+#  LocalWords:  sampleGrade exampleTall Subsective intersective mcmc
+#  LocalWords:  subsective subsectiveIs averageFor expectedValue eg
+#  LocalWords:  sampleGForCn exampleDumbo infty subspaces WebPPL RSA
+#  LocalWords:  FraCaS testsuite monotonicity Gricean softmax Blei
+#  LocalWords:  Lassiter inferrable Variational Kucukelbir McAuliffe
+#  LocalWords:  Hintikka Suppes Blanck Chatzikyriakidis Lappin
+#  LocalWords:  modelling
