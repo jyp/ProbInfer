@@ -1943,14 +1943,15 @@ log of density.)
 *** Adverbs of frequency
     Adverbs of frequency, e.g., seldom, frequently, rarely, couple of times per day, etc. 
     Context dependent: 
-    - John frequently goes to Paris 
-    - John frequently takes French classes 
-    - John frequently gets distracted during a lecture 
-    - John frequently sips water during a day
+    - John frequently goes to Paris.
+    - John frequently takes French classes.
+    - John frequently gets distracted during a lecture.
+    - John frequently sips water during a day.
     
     Adverbs of frequency interact with quantifiers.
 *** Adjectives and Comparatives derived from them
     Consider:
+
     Few people are basketball players.
     Basketball players are taller than most non basketball players.
     John is a basketball player.    
@@ -2083,7 +2084,7 @@ BUT we can also *bake in* pragmatics into the /raw/ probabilistic meaning.
 For example,
 ⟦I ate n cookies⟧ = eat_cookies(I, m) where m is chosen in a Poisson distribution with mode n.
 
-*** The proviso problem                                              :Sandro:
+*** The proviso problem                                              
 - If John goes to the sea he will take his cat with
   him. (Presupposition is that the cat and going to the sea are not related;
   so, John definitely has a cat.)
