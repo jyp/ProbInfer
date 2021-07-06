@@ -1993,16 +1993,14 @@ log of density.)
 
    Question: If Almost all > Most, should it be that d2>d1?
 
-     
-   Question: d1 VS d3? d2 VS d3?
 
 
    All vampires are sleepy.
    Dracula is probably a vampire.
    ------------------------------
-   Dracula is sleepy.     (Probable with d4) 
+   Dracula is sleepy.     (Probable with d3) 
    
-   Question: d1 VS d4? d2 VS d4? d3 VS d4?
+   Question: d1 VS d3? d2 VS d3?
 
    In general, if we define a notion of monotonicity in premises, 
    would our notion of inference be compatible with them?
