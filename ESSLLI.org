@@ -2016,10 +2016,10 @@ log of density.)
     whole ESSLLI course on this! We won't get into the details, but a
     quick outline is the following.
 
-RSA assumes two agents, a listener \Li{} and a speaker \Spk{}. \Spk{}
-utters a declarative sentence \(u\) heard by \Li{}, without
+RSA assumes two agents, a listener ℒ and a speaker 𝒮. 𝒮
+utters a declarative sentence \(u\) heard by ℒ, without
 transmission error. The point of RSA is to model how, assuming Gricean
-cooperativeness between \Spk{} and \Li{}, \Li{} should disambiguate
+cooperativeness between 𝒮 and ℒ, ℒ should disambiguate
 among possible interpretations of \(u\).
 
 1. Does u literally mean φ? For this we may use the model described
