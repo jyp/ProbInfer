@@ -2011,6 +2011,21 @@ log of density.)
    premises of A?
    
 ** Probabilistic approach to pragmatics
+*** The proviso problem
+- If John goes to the sea he will take his cat with
+  him. (Presupposition is that the cat and going to the sea are not related;
+  so, John definitely has a cat.)
+- If John goes to the sea then he will take his scuba. (Presupposition
+  is that the scuba and the sea are related; so John doesn't need to
+  have a cube, but he might get one for this purpose.)
+
+  How to model this? Lassiter (2012) proposes to use
+  probabilistic approach for that, which we adopt in our settings.
+  Assume we have a candidate presupposition.  If the candidate
+  presupposition π is not probabilistic ally inferrable from the initial
+  sentence, then we consider π to be an actual
+  presupposition. Otherwise, π doesn't qualify for a presupposition.
+
 *** The Rational Speech Act (RSA) model
     A popular approach to pragmatics is the RSA model. There is a
     whole ESSLLI course on this! We won't get into the details, but a
@@ -2042,7 +2057,7 @@ among possible interpretations of \(u\).
 Take away message: you can use an RSA layer *on top of* our
 probabilistic models.
 
-*** Numbers
+**** Numbers
 
     S: “I ate 5 cookies”.
 
@@ -2094,21 +2109,6 @@ BUT we can also *bake in* pragmatics into the /raw/ probabilistic meaning.
 
 For example,
 ⟦I ate n cookies⟧ = eat_cookies(I, m) where m is chosen in a Poisson distribution with mode n.
-
-*** The proviso problem                                              
-- If John goes to the sea he will take his cat with
-  him. (Presupposition is that the cat and going to the sea are not related;
-  so, John definitely has a cat.)
-- If John goes to the sea then he will take his scuba. (Presupposition
-  is that the scuba and the sea are related; so John doesn't need to
-  have a cube, but he might get one for this purpose.)
-
-  How to model this? Lassiter (2012) proposes to use
-  probabilistic approach for that, which we adopt in our settings.
-  Assume we have a candidate presupposition.  If the candidate
-  presupposition π is not probabilistic ally inferrable from the initial
-  sentence, then we consider π to be an actual
-  presupposition. Otherwise, π doesn't qualify for a presupposition.
 
 * References
 
