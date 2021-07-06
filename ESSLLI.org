@@ -87,6 +87,7 @@ before. Propositions before the symbol ~)===>~ are called /premises/,
 and the statement after ~)===>~ is usually called /the conclusion/ 
 (note that there can be many or even no premise, but there is one and only one
 conclusion). We may say that the conclusion follows or is entailed from the premises.
+The premises together with the conclusion is called an /argument/.
 
 #+begin_example
   Every dog barks. ----CONTRARY---- No dog barks.
@@ -1910,45 +1911,52 @@ log of density.)
 * Test suite for Probabilistic Inference, Outlook
 ** Building a corpus of probabilistic inference
    Data driven approaches need corpora to learn. But, a corpus is also
-   important for testing systems to establish their strengths,
+   important for testing systems to establish their strength,
    weakness, robustness, etc.  For natural language inference, there
    are several corpora, including FraCaS and SICK.  However, apart
    from a corpus designed in CLASP, no corpus exists for probabilistic
    inference problems.
 *** Generalized quantifiers
-    Quantification with most, few, many, several, etc. give rise to non-logical inference.
+    Quantification with most, few, many, several, etc. can give rise to non-logical inference,
+    which we called above non-demonstrative inference---ones whose premises do not necessitate the conclusion. 
     While in building a testsuite for probabilistic inference they are irreplaceable,
     we should limit ourselves not to overuse them as their complex semantic
-    nature does not make easily available various meanings that can be obtained in the case 
-    of standard, universal quantification.
-    - Every man has a car. (Not too hard to comprehend its meaning albeit ambiguous)
-    - Every man can drive every car. (Not too hard to understand)
-    - Most men can drive most cars. (What does that mean exactly?)
-    - Many men love fast cars but not always can afford them. (always - refers to many men?: TODO check English)
+    nature does not make easily available various meanings, compared to cases where only classical,
+    universal and/or existential quantification is used. Indeed, consider:
+    
+    - Every man has a bicycle. (Not too hard to comprehend its meaning albeit ambiguous)
+    - Every man can ride every bicycle. (Not too hard to understand)
+    - Most men can ride most bicycles. (What does that mean exactly?)
+    - Many men love cars but not always can afford them. (Even more obscure than the previous one.)
+
 *** Bare plurals, Generics, and Indefinite Noun phrases
 
     One has to be careful when dealing with bare plurals as they have (at least) two kinds of meanings:
-    They serve as generalized quantifiers (like most) and they also may carry generic meaning
+    They serve as generalized quantifiers (like most) and they also may carry generic meaning, as it is in 
+    the following exammples:
+
     - Ducks lay eggs. (Generic because it's not equivalent to Most ducks lay eggs or all ducks lay eggs)
     - Small ducks do not trust humans. (Generalize quantifier usage ~ most small ducks don't trust humans)
     - Honeybees produce beeswax. (Generic because, for example, queens do not produce any beeswax)  
       
     While indefinite noun phrases in Montague Grammar are translated with the help of existential quantifier,
-    they also exhibit traits of generic readings:
+    they also show some traits of generic readings:
     
     - A lion has a mane. (Generic: only adult male lions do)
     - An adult male lion has a mane. (~ All typical adult male lions have manes)
-    - A lion saw a zebra.
-
+    - A lion saw a zebra. (~Some lion saw some zebra)
+      
 *** Adverbs of frequency
     Adverbs of frequency, e.g., seldom, frequently, rarely, couple of times per day, etc. 
-    Context dependent: 
-    - John frequently goes to Paris.
-    - John frequently takes French classes.
-    - John frequently gets distracted during a lecture.
-    - John frequently sips water during a day.
+    are context dependent: 
+
+    - John frequently goes to Paris.                       (e.g. once in a month?)
+    - John frequently goes French restaurants for lunch.   (e.g. twice a week?)
+    - John frequently gets distracted during a lecture.    (e.g. almost always when the teacher starts speaking about material?)
+    - John frequently sips water during a workout session. (e.g. three or four times per 45 minutes?)            
     
-    Adverbs of frequency interact with quantifiers.
+    Adverbs of frequency interact with quantifiers. It's important to ensure their swift interaction 
+    in order to make a meaningful test suite example.
 *** Adjectives and Comparatives derived from them
     Consider:
 
@@ -1966,7 +1974,7 @@ log of density.)
     John is taller than Bob.
 
     Another questions: Is John tall?
-
+    
 ** Evaluation criteria of a probabilistic inference system against the corpus
    How to evaluate an inference, on what scale: Yes∣No, Yes∣NA∣No, Yes∣Kind of Yes∣NA∣Kind of No∣No, etc.
    Our scale: [0,1]
@@ -1997,7 +2005,10 @@ log of density.)
    Question: d1 VS d4? d2 VS d4? d3 VS d4?
 
    In general, if we define a notion of monotonicity in premises, 
-   would our notions of inference be compatible with them?
+   would our notion of inference be compatible with them?
+   That is, if premises of an argument A are stronger (by some measure of strength) 
+   than of an argument B, would the conclusion of B become more probable under the 
+   premises of A?
    
 ** Probabilistic approach to pragmatics
 *** The Rational Speech Act (RSA) model
