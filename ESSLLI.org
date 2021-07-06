@@ -2010,10 +2010,12 @@ log of density.)
 
 
 
+   #+begin_example
    All vampires are sleepy.
    Dracula is probably a vampire.
    ------------------------------
    Dracula is sleepy.     (Probable with d3) 
+   #+end_example
    
    Question: d1 VS d3? d2 VS d3?
 
@@ -2048,20 +2050,20 @@ log of density.)
     whole ESSLLI course on this! We won't get into the details, but a
     quick outline is the following.
 
-RSA assumes two agents, a listener ℒ and a speaker 𝒮. 𝒮
-utters a declarative sentence \(u\) heard by ℒ, without
+RSA assumes two agents, a listener \(ℒ\) and a speaker \(𝒮\). \(𝒮\)
+utters a declarative sentence \(u\) heard by \(ℒ\), without
 transmission error. The point of RSA is to model how, assuming Gricean
-cooperativeness between 𝒮 and ℒ, ℒ should disambiguate
+cooperativeness between \(𝒮\) and \(ℒ\), \(ℒ\) should disambiguate
 among possible interpretations of \(u\).
 
-1. Does u literally mean φ? For this we may use the model described
+1. Does \(u\) literally mean \(φ\)? For this we may use the model described
    above. (The uncertainty over the meaning of the utterance u is
-   represented by a parameter θ.)
+   represented by a parameter \(θ\).)
 
   \(P_{L₀}(φ   ∣ u)   = 𝔼_{θ ∈ Parameters}[⟦u⟧ᶿ ⊢ φ]\)
 
 2. The (Gricean) speaker chooses $u$ to (soft-)maximize the probability
-   that L understands φ:
+   that \(ℒ\) understands φ:
 
   \(P_{S₁}(u   ∣ φ)   ∝ (P_{L₀}(φ   ∣ u) / C(u))^{α}\)                  
 
