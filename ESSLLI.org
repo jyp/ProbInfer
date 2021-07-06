@@ -1931,65 +1931,80 @@ log of density.)
 
 *** Bare plurals, Generics, and Indefinite Noun phrases
 
-    One has to be careful when dealing with bare plurals as they have (at least) two kinds of meanings:
-    They serve as generalized quantifiers (like most) and they also may carry generic meaning, as it is in 
-    the following exammples:
+    One has to be careful when dealing with bare plurals as they have
+    (at least) two kinds of meanings: They serve as generalized
+    quantifiers (like most) and they also may carry generic meaning,
+    as it is in the following exammples:
 
-    - Ducks lay eggs. (Generic because it's not equivalent to Most ducks lay eggs or all ducks lay eggs)
-    - Small ducks do not trust humans. (Generalize quantifier usage ~ most small ducks don't trust humans)
-    - Honeybees produce beeswax. (Generic because, for example, queens do not produce any beeswax)  
+    - Ducks lay eggs. (Generic because it's not equivalent to Most
+      ducks lay eggs or all ducks lay eggs)
+    - Small ducks do not trust humans. (Generalize quantifier usage ~
+      most small ducks don't trust humans)
+    - Honeybees produce beeswax. (Generic because, for example, queens
+      do not produce any beeswax)
       
-    While indefinite noun phrases in Montague Grammar are translated with the help of existential quantifier,
-    they also show some traits of generic readings:
+    While indefinite noun phrases in Montague Grammar are translated
+    with the help of existential quantifier, they also show some
+    traits of generic readings:
     
     - A lion has a mane. (Generic: only adult male lions do)
     - An adult male lion has a mane. (~ All typical adult male lions have manes)
     - A lion saw a zebra. (~Some lion saw some zebra)
       
 *** Adverbs of frequency
-    Adverbs of frequency, e.g., seldom, frequently, rarely, couple of times per day, etc. 
-    are context dependent: 
+    Adverbs of frequency, e.g., seldom, frequently, rarely, couple of
+    times per day, etc.  are context dependent:
 
-    - John frequently goes to Paris.                       (e.g. once in a month?)
-    - John frequently goes French restaurants for lunch.   (e.g. twice a week?)
-    - John frequently gets distracted during a lecture.    (e.g. almost always when the teacher starts speaking about material?)
-    - John frequently sips water during a workout session. (e.g. three or four times per 45 minutes?)            
+    | John frequently goes to Paris.                       | (e.g. once in a month?)                                               |
+    | John frequently goes French restaurants for lunch.   | (e.g. twice a week?)                                                  |
+    | John frequently gets distracted during a lecture.    | (e.g. almost always when the teacher starts speaking about material?) |
+    | John frequently sips water during a workout session. | (e.g. three or four times per 45 minutes?)                            |
     
-    Adverbs of frequency interact with quantifiers. It's important to ensure their swift interaction 
-    in order to make a meaningful test suite example.
+    Adverbs of frequency interact with quantifiers. It's important to
+    ensure their swift interaction in order to make a meaningful test
+    suite example.
 *** Adjectives and Comparatives derived from them
     Consider:
-
+    
+    #+begin_example
     Few people are basketball players.
     Basketball players are taller than most non basketball players.
     John is a basketball player.    
     )===>
     John is taller than many people.
+    #+end_example
     
     Consider another example:
     
+    #+begin_example
     John is taller than Mary.
     Mary is taller than Bob.
     )===>
     John is taller than Bob.
+    #+end_example
 
-    Another questions: Is John tall?
+    Another question: Is John tall?
     
 ** Evaluation criteria of a probabilistic inference system against the corpus
-   How to evaluate an inference, on what scale: Yes∣No, Yes∣NA∣No, Yes∣Kind of Yes∣NA∣Kind of No∣No, etc.
-   Our scale: [0,1]
-   Valid inference has a probability 0.5+x
-   Invalid inference has a probability 0.5-y 
 
+   How to evaluate an inference, on what scale: ~Yes∣No~, ~Yes∣NA∣No~,
+   ~Yes∣Kind of Yes∣NA∣Kind of No∣No~, etc.  Our scale: \([0,1]\) Valid
+   inference has a probability \(0.5+x\) Invalid inference has a
+   probability \(0.5-y\).
+
+   #+begin_example
    Most vampires are sleepy.
    Dracula is a vampire.
    )===>
    Dracula is sleepy.     (Probable with d1)
+   #+end_example
 
+   #+begin_example
    Almost all vampires are sleepy.
    Dracula is a vampire.
    )===>
    Dracula is sleepy.     (Probable with d2)
+   #+end_example
 
    Question: If Almost all > Most, should it be that d2>d1?
 
@@ -2015,17 +2030,21 @@ log of density.)
   so, John definitely has a cat.)
 - If John goes to the sea then he will take his scuba. (Presupposition
   is that the scuba and the sea are related; so John doesn't need to
-  have a cube, but he might get one for this purpose.)
+  have a scuba, but he might get one for this purpose.)
 
   How to model this? Lassiter (2012) proposes to use
   probabilistic approach for that, which we adopt in our settings.
   Assume we have a candidate presupposition.  If the candidate
-  presupposition π is not probabilistic ally inferrable from the initial
+  presupposition π is not probabilistically inferrable from the initial
   sentence, then we consider π to be an actual
   presupposition. Otherwise, π doesn't qualify for a presupposition.
 
 *** The Rational Speech Act (RSA) model
-    A popular approach to pragmatics is the RSA model. There is a
+
+    Meaning is often interpreted *in contrast* to common knowledge. So
+    how do we do this?
+    
+    A popular approach to this kind of pragmatics is the RSA model. There is a
     whole ESSLLI course on this! We won't get into the details, but a
     quick outline is the following.
 
@@ -2055,7 +2074,7 @@ among possible interpretations of \(u\).
 Take away message: you can use an RSA layer *on top of* our
 probabilistic models.
 
-**** Numbers
+**** Example
 
     S: “I ate 5 cookies”.
 
@@ -2101,7 +2120,7 @@ We won't further discuss the merits of this model.
 In the above we have:
 
   1. used a “strict” probabilistic semantics
-  2 and laid a pragmatic component on top of it.
+  2. and laid a pragmatic component on top of it.
 
 BUT we can also *bake in* pragmatics into the /raw/ probabilistic meaning.
 
