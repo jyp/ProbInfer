@@ -1909,6 +1909,8 @@ log of density.)
   programming languages.
 
 * Test suite for Probabilistic Inference, Outlook
+Link to the video lecture: https://youtu.be/E_itLhgh7Yk
+
 ** Building a corpus of probabilistic inference
    Data driven approaches need corpora to learn. But, a corpus is also
    important for testing systems to establish their strength,
