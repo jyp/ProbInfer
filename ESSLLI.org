@@ -36,18 +36,30 @@
 
 Preamble: finding the learning material
 
-
-
 - Clone the repository: ~git clone https://github.com/jyp/ProbInfer; cd ProbInfer~ (The lecture notes are in ~ESSLLI.org~)
 - Install the dependencies using nix (see also https://nixos.org/guides/install-nix.html)
 
 #+begin_src bash
-  sh <(curl -L https://nixos.org/nix/install) --daemon
-  nix-shell
+    curl -L https://nixos.org/nix/install | sh
 #+end_src
+
+(Note that if you're running MacOS, you may run into hurdles. For
+example you will have to type your password, and if it's empty, it
+won't work.)
+
+
+Then you can do
+
+#+begin_src bash
+    nix-shell
+#+end_src
+
+Within this shell, you can load examples and run them.
 
 - Load an example: ~ghci DiceExample.hs~
 - run: ~doit~
+
+What this program does is explained in the second lecture!
   
 * Inference under uncertainty: Problem description
 Link to the video lecture: https://youtu.be/3zQVGohcVd4
