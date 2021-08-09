@@ -1,4 +1,4 @@
-let nixpkgs_source = (fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-20.09.tar.gz);
+let nixpkgs_source = (fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-21.05.tar.gz);
 in {pkgs ? import nixpkgs_source {
     inherit system;
   }, system ? builtins.currentSystem}:
