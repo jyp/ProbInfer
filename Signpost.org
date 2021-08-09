@@ -1,0 +1,29 @@
+Welcome to "probabilistic semantics for natural language"!
+
+This room is for questions and answers.
+
+Feel free to un-mute and ask questions any time!
+
+
+Watch the video lectures here:
+
+| Monday    | https://youtu.be/3zQVGohcVd4 |
+| Tuesday   | https://youtu.be/XyyPeQ37fhc |
+| Wednesday | https://youtu.be/XJugaNpNi_0 |
+| Thursday  | https://youtu.be/ED4i5cF6nPk |
+| Friday    | https://youtu.be/E_itLhgh7Yk |
+
+
+Read the lecture notes here:
+
+https://github.com/jyp/ProbInfer/blob/main/ESSLLI.pdf
+
+
+
+
+
+
+
+
+
+
