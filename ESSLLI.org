@@ -1036,7 +1036,7 @@ programs are run on an actual machine.)
  
 **** Measure
 
-Probabilistic programs do *not* define distributions. That
+Probabilistic programs do *not*, in general, define distributions. That
 is, the total /measure/ of a program is not guaranteed to be 1. For example,
 the program |observe false| has a measure of 0.
      
