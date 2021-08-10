@@ -37,13 +37,19 @@
 Preamble: finding the learning material
 
 - Clone the repository: ~git clone https://github.com/jyp/ProbInfer; cd ProbInfer~ (The lecture notes are in ~ESSLLI.org~)
+
+
+(If you're running MacOS, you may see ~xcrun: error: invalid active
+developer path (/Library/Developer/CommandLineTools)~, in which case
+you need to run ~xcode-select --install~)
+
 - Install the dependencies using nix (see also https://nixos.org/guides/install-nix.html)
 
 #+begin_src bash
     curl -L https://nixos.org/nix/install | sh
 #+end_src
 
-(Note that if you're running MacOS, you may run into hurdles. For
+(If you're running MacOS, you may run into more hurdles. For
 example you will have to type your password, and if it's empty, it
 won't work.)
 
