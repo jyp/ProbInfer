@@ -12,6 +12,6 @@ default:
 	mv -f $*.tex $@
 
 clean:
-	rm *.pdf ESSLLI.tex
+	rm -f *.pdf ESSLLI.tex
 
 

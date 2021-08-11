@@ -46,7 +46,7 @@ you need to run ~xcode-select --install~)
 - Install the dependencies using nix (see also https://nixos.org/guides/install-nix.html)
 
 #+begin_src bash
-    curl -L https://nixos.org/nix/install | sh
+    sh<(curl -L https://nixos.org/nix/install)
 #+end_src
 
 (If you're running MacOS, you may run into more hurdles. For
@@ -1336,8 +1336,10 @@ This is indeed used for:
 
 *** Reminder: set cardinalities
 
-If \(card(A) = n\), then \(card(A → Bool) = 2^{card({A})}\). So, there are “exponentially many”
-more predicates over a set than there are elements in the set.
+If \(card(A) = n\), then \(card(A → Bool) = 2^{card({A})}\). This is
+because if a set has \(n\) elements, then it has \(2^n\) possible
+subsets. So, there are “exponentially many” more predicates over a set
+than there are elements in the set.
 
 A related fact is that \(ℕ\) is countable, but the set of predicates over
 natural numbers \(ℕ → Bool\) is uncountable.
@@ -1386,6 +1388,8 @@ predicateSimple = do
 #+END_src
 
                        [[./predicate.svg]]
+
+Here, the blue area represents the subspace where individuals satisfy the predicate.
 
 *** Idea 2: Boxes
 
@@ -1511,6 +1515,14 @@ exampleBirds = do
   \end{tikzpicture}
 #+END_src
                        [[./birds.svg]]
+
+
+Here, the blue-shaded area represents the subspace where individuals
+satisfy the *bird* predicate. So the greyed out part shaded in blue
+represents birds.  The red-shaded area represents the subspace where
+individuals satisfy the *fly* predicate. The intersection (hence
+shaded in purple), represent the subspace of individuals which satisfy
+both predicates.
 
 Same example, but using boxes for predicates:
 
