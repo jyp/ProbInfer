@@ -191,3 +191,21 @@
 	  t))))))
 
 
+(defun org-dblock-write:example-src (params)
+  (let* ((filename (or (plist-get params :filename) "LingExamples.hs"))
+         (defn (or (plist-get params :defn) (error "Block defn not specified")))
+         (include-type (or (plist-get params :include-type) (not (symbolp defn))))
+         (rx (if (symbolp defn)
+                 (rx-to-string `(seq ,(symbol-name defn) (zero-or-more (any " \t")) "::"))
+               defn))
+       (contents
+        (progn
+          (find-file-noselect filename)
+          (with-current-buffer (get-file-buffer filename)
+            (save-excursion
+              (goto-char 0)
+              (re-search-forward rx)
+              (unless include-type (forward-line))
+              (beginning-of-line)
+              (buffer-substring-no-properties (point) (progn (forward-paragraph) (1- (point)))))))))
+    (insert contents)))

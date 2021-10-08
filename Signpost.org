@@ -11,8 +11,8 @@ Watch the video lectures here:
 | Monday    | https://youtu.be/3zQVGohcVd4 | Problem Description                               |
 | Tuesday   | https://youtu.be/XyyPeQ37fhc | Probabilistic Programs                            |
 | Wednesday | https://youtu.be/XJugaNpNi_0 | From Inference Problems to Probabilistic Programs |
-| Thursday  | https://youtu.be/ED4i5cF6nPk |                                                   |
-| Friday    | https://youtu.be/E_itLhgh7Yk |                                                   |
+| Thursday  | https://youtu.be/ED4i5cF6nPk | Running Probabilistic Programs                    |
+| Friday    | https://youtu.be/E_itLhgh7Yk | Wrap up and outlook                               |
 
 
 Read the lecture notes here:
