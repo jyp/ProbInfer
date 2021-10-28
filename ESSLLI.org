@@ -2149,6 +2149,7 @@ Exercises:
  - Repeat everything with α=∞
  - Consider the utterance “I ate 2 cookies”. 
 
+ 
 We won't further discuss the merits of this model.
 
 In the above we have:
@@ -2160,6 +2161,9 @@ BUT we can also *bake in* pragmatics into the /raw/ probabilistic meaning.
 
 For example,
 ⟦I ate n cookies⟧ = eat_cookies(I, m) where m is chosen in a Poisson distribution with mode n.
+** TODO RSA in terms of probabilistic programs
+
+See: Grove and Bernardy (2021), appearing in LENLS18 proceedings.
 
 * References
 
