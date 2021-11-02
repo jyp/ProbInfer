@@ -2215,6 +2215,7 @@ https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational
   From compositional semantics to Bayesian pragmatics via logical inference
   NALOMA 2021
 
+- Jules Jacob, Paradoxes of probabilistic programming 
 
 
 
